@@ -14,8 +14,8 @@ import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.trading.TradeSet;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 
 import java.util.HashSet;
 import java.util.Set;

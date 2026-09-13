@@ -1,8 +1,8 @@
 package com.iafenvoy.iceandfire.event;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import com.iafenvoy.iceandfire.fabric.event.Event;
+import com.iafenvoy.iceandfire.fabric.event.ICancellableEvent;
 
 public final class GriefBreakBlockEvent extends Event implements ICancellableEvent {
     private final LivingEntity griefer;

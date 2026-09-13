@@ -6,7 +6,7 @@ import com.iafenvoy.uranus.client.model.ITabulaModelAnimator;
 import com.iafenvoy.uranus.util.function.MemorizeSupplier;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.Identifier;
-import net.neoforged.bus.api.Event;
+import com.iafenvoy.iceandfire.fabric.event.Event;
 
 import java.util.Map;
 

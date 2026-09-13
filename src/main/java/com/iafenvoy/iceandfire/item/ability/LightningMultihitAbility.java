@@ -1,17 +1,17 @@
 package com.iafenvoy.iceandfire.item.ability;
 
+import com.mojang.datafixers.util.Pair;
 import com.iafenvoy.iceandfire.config.IafCommonConfig;
 import com.iafenvoy.iceandfire.network.payload.LightningBoltS2CPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.iafenvoy.iceandfire.fabric.network.PacketDistributor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,15 +24,15 @@ public class LightningMultihitAbility implements PostHitAbility {
             if (IafCommonConfig.INSTANCE.tools.dragonLightningAbility.getValue() && attacker.level() instanceof ServerLevel world && target instanceof Mob mob) {
                 Vec3 pos = attacker.position();
                 double searchRange = IafCommonConfig.INSTANCE.tools.dragonLightningSearchRange.getValue();
-                List<Tuple<Vec3, Vec3>> lightnings = new LinkedList<>();
+                List<Pair<Vec3, Vec3>> lightnings = new LinkedList<>();
                 //Cache for BFS
-                Queue<Tuple<Mob, Double>> bfsQueue = new LinkedList<>();
-                bfsQueue.add(new Tuple<>(mob, (double) EnchantmentHelper.modifyDamage(world, stack, target, world.damageSources.mobAttack(attacker), 1)));
+                Queue<Pair<Mob, Double>> bfsQueue = new LinkedList<>();
+                bfsQueue.add(Pair.of(mob, (double) EnchantmentHelper.modifyDamage(world, stack, target, world.damageSources.mobAttack(attacker), 1)));
                 List<Mob> attacked = new LinkedList<>();
                 while (!bfsQueue.isEmpty()) {
-                    Tuple<Mob, Double> pair = bfsQueue.poll();
-                    Mob mobEntity = pair.getA();
-                    double damage = pair.getB();
+                    Pair<Mob, Double> pair = bfsQueue.poll();
+                    Mob mobEntity = pair.getFirst();
+                    double damage = pair.getSecond();
                     if (mobEntity != target)//Don't hit the source entity again
                         mobEntity.hurt(world.damageSources().mobAttack(attacker), (float) damage);
                     attacked.add(mobEntity);
@@ -48,8 +48,8 @@ public class LightningMultihitAbility implements PostHitAbility {
                     for (Mob m : targets) {
                         if (attacked.size() + bfsQueue.size() >= IafCommonConfig.INSTANCE.tools.dragonLightningMaxSearchCount.getValue())
                             break;
-                        bfsQueue.add(new Tuple<>(m, damage * IafCommonConfig.INSTANCE.tools.dragonLightningDamageReduction.getValue()));
-                        lightnings.add(new Tuple<>(mobEntity.getBoundingBox().getCenter(), m.getBoundingBox().getCenter()));
+                        bfsQueue.add(Pair.of(m, damage * IafCommonConfig.INSTANCE.tools.dragonLightningDamageReduction.getValue()));
+                        lightnings.add(Pair.of(mobEntity.getBoundingBox().getCenter(), m.getBoundingBox().getCenter()));
                     }
                 }
                 for (ServerPlayer player : world.getPlayers(player1 -> player1.distanceTo(attacker) < 64))

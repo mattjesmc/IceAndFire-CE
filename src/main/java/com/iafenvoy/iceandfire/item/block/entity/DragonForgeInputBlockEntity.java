@@ -52,7 +52,7 @@ public class DragonForgeInputBlockEntity extends BlockEntity {
     }
 
     public void onHitWithFlame(LivingEntity entity) {
-        this.onHitWithFlame(entity.getAttributeValue(IafAttributes.DRAGON_FORGE_SPEED));
+        this.onHitWithFlame(entity.getAttributeValue(IafAttributes.DRAGON_FORGE_SPEED.holder()));
     }
 
     public void onHitWithFlame(double amount) {

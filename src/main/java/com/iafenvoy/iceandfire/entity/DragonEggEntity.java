@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -241,7 +242,7 @@ public class DragonEggEntity extends LivingEntity implements BlacklistedFromStat
             boolean valid = world.canSeeSky(pos.above()) && isRainingAt;
             if (valid) entity.setDragonAge(entity.getDragonAge() + 1);
             if (hatched) {
-                LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(world, EntitySpawnReason.CONVERSION);
+                LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(world, EntitySpawnReason.CONVERSION);
                 assert bolt != null;
                 bolt.setPos(entity.getX(), entity.getY(), entity.getZ());
                 bolt.setVisualOnly(true);

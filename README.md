@@ -1,3 +1,6 @@
+> **Fabric 26.2 fork.** This branch is a personal port of Ice And Fire: Community Edition to Fabric on Minecraft 26.2.
+> Upstream is NeoForge-only; see [FABRIC_PORT.md](FABRIC_PORT.md) for how the port is put together and what differs.
+
 # Ice And Fire Community Edition
 
 This is an unofficial fork of [Ice And Fire](https://github.com/AlexModGuy/Ice_And_Fire). Contains optimizations, new

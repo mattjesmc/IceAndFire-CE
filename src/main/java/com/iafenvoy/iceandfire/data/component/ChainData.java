@@ -73,6 +73,6 @@ public class ChainData extends NeedUpdateData<LivingEntity> {
     }
 
     public static ChainData get(LivingEntity living) {
-        return living.getData(IafAttachments.CHAIN_DATA);
+        return living.getAttachedOrCreate(IafAttachments.CHAIN_DATA);
     }
 }

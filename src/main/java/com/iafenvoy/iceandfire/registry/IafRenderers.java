@@ -21,13 +21,13 @@ import com.iafenvoy.uranus.util.function.MemorizeSupplier;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
-@EventBusSubscriber(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class IafRenderers {
     // Uranus prefixes every Tabula model lookup with models/tabula/.
     public static final Identifier FIRE_DRAGON = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "firedragon/firedragon_ground");
@@ -35,80 +35,77 @@ public final class IafRenderers {
     public static final Identifier LIGHTNING_DRAGON = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "lightningdragon/lightningdragon_ground");
     public static final Identifier SEA_SERPENT = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "seaserpent/seaserpent_base");
 
-    @SubscribeEvent
-    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(IafEntities.FIRE_DRAGON.get(), x -> new DragonBaseEntityRenderer<>(x, () -> TabulaModelHandlerHelper.getModel(FIRE_DRAGON, new MemorizeSupplier<>(FireDragonTabulaModelAnimator::new))));
-        event.registerEntityRenderer(IafEntities.ICE_DRAGON.get(), manager -> new DragonBaseEntityRenderer<>(manager, () -> TabulaModelHandlerHelper.getModel(ICE_DRAGON, new MemorizeSupplier<>(IceDragonTabulaModelAnimator::new))));
-        event.registerEntityRenderer(IafEntities.LIGHTNING_DRAGON.get(), manager -> new LightningDragonEntityRenderer(manager, () -> TabulaModelHandlerHelper.getModel(LIGHTNING_DRAGON, new MemorizeSupplier<>(LightningTabulaDragonAnimator::new))));
-        event.registerEntityRenderer(IafEntities.DRAGON_EGG.get(), DragonEggEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DRAGON_ARROW.get(), DragonArrowEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DRAGON_SKULL.get(), DragonSkullEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.FIRE_DRAGON_CHARGE.get(), manager -> new DragonChargeEntityRenderer(manager, true));
-        event.registerEntityRenderer(IafEntities.ICE_DRAGON_CHARGE.get(), manager -> new DragonChargeEntityRenderer(manager, false));
-        event.registerEntityRenderer(IafEntities.LIGHTNING_DRAGON_CHARGE.get(), LightningDragonChargeEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.HIPPOGRYPH_EGG.get(), ThrownItemRenderer::new);
-        event.registerEntityRenderer(IafEntities.HIPPOGRYPH.get(), HippogryphEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.STONE_STATUE.get(), StoneStatueEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.GORGON.get(), GorgonEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.PIXIE.get(), PixieEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.CYCLOPS.get(), CyclopsEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.SIREN.get(), SirenEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.HIPPOCAMPUS.get(), HippocampusEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DEATH_WORM.get(), DeathWormEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DEATH_WORM_EGG.get(), ThrownItemRenderer::new);
-        event.registerEntityRenderer(IafEntities.COCKATRICE.get(), CockatriceEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.COCKATRICE_EGG.get(), ThrownItemRenderer::new);
-        event.registerEntityRenderer(IafEntities.STYMPHALIAN_BIRD.get(), StymphalianBirdEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.STYMPHALIAN_FEATHER.get(), StymphalianFeatherEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.STYMPHALIAN_ARROW.get(), StymphalianArrowEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.TROLL.get(), TrollEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.AMPHITHERE.get(), AmphithereEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.AMPHITHERE_ARROW.get(), AmphithereArrowEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.SEA_SERPENT.get(), SeaSerpentEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.SEA_SERPENT_BUBBLES.get(), NothingEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.SEA_SERPENT_ARROW.get(), SeaSerpentArrowEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.CHAIN_TIE.get(), ChainTieEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.PIXIE_CHARGE.get(), NothingEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.TIDE_TRIDENT.get(), TideTridentEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.MOB_SKULL.get(), MobSkullEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_SCUTTLER.get(), DreadScuttlerEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_GHOUL.get(), DreadGhoulEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_BEAST.get(), DreadBeastEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_SCUTTLER.get(), DreadScuttlerEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_THRALL.get(), DreadThrallEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_LICH.get(), DreadLichEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_LICH_SKULL.get(), DreadLichSkullEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_KNIGHT.get(), DreadKnightEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.DREAD_HORSE.get(), DreadHorseEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.HYDRA.get(), HydraEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.HYDRA_BREATH.get(), NothingEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.HYDRA_ARROW.get(), HydraArrowEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.GHOST.get(), GhostEntityRenderer::new);
-        event.registerEntityRenderer(IafEntities.GHOST_SWORD.get(), GhostSwordEntityRenderer::new);
+    public static void registerEntityRenderers() {
+        EntityRendererRegistry.register(IafEntities.FIRE_DRAGON.get(), x -> new DragonBaseEntityRenderer<>(x, () -> TabulaModelHandlerHelper.getModel(FIRE_DRAGON, new MemorizeSupplier<>(FireDragonTabulaModelAnimator::new))));
+        EntityRendererRegistry.register(IafEntities.ICE_DRAGON.get(), manager -> new DragonBaseEntityRenderer<>(manager, () -> TabulaModelHandlerHelper.getModel(ICE_DRAGON, new MemorizeSupplier<>(IceDragonTabulaModelAnimator::new))));
+        EntityRendererRegistry.register(IafEntities.LIGHTNING_DRAGON.get(), manager -> new LightningDragonEntityRenderer(manager, () -> TabulaModelHandlerHelper.getModel(LIGHTNING_DRAGON, new MemorizeSupplier<>(LightningTabulaDragonAnimator::new))));
+        EntityRendererRegistry.register(IafEntities.DRAGON_EGG.get(), DragonEggEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DRAGON_ARROW.get(), DragonArrowEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DRAGON_SKULL.get(), DragonSkullEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.FIRE_DRAGON_CHARGE.get(), manager -> new DragonChargeEntityRenderer(manager, true));
+        EntityRendererRegistry.register(IafEntities.ICE_DRAGON_CHARGE.get(), manager -> new DragonChargeEntityRenderer(manager, false));
+        EntityRendererRegistry.register(IafEntities.LIGHTNING_DRAGON_CHARGE.get(), LightningDragonChargeEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.HIPPOGRYPH_EGG.get(), ThrownItemRenderer::new);
+        EntityRendererRegistry.register(IafEntities.HIPPOGRYPH.get(), HippogryphEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.STONE_STATUE.get(), StoneStatueEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.GORGON.get(), GorgonEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.PIXIE.get(), PixieEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.CYCLOPS.get(), CyclopsEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.SIREN.get(), SirenEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.HIPPOCAMPUS.get(), HippocampusEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DEATH_WORM.get(), DeathWormEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DEATH_WORM_EGG.get(), ThrownItemRenderer::new);
+        EntityRendererRegistry.register(IafEntities.COCKATRICE.get(), CockatriceEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.COCKATRICE_EGG.get(), ThrownItemRenderer::new);
+        EntityRendererRegistry.register(IafEntities.STYMPHALIAN_BIRD.get(), StymphalianBirdEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.STYMPHALIAN_FEATHER.get(), StymphalianFeatherEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.STYMPHALIAN_ARROW.get(), StymphalianArrowEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.TROLL.get(), TrollEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.AMPHITHERE.get(), AmphithereEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.AMPHITHERE_ARROW.get(), AmphithereArrowEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.SEA_SERPENT.get(), SeaSerpentEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.SEA_SERPENT_BUBBLES.get(), NothingEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.SEA_SERPENT_ARROW.get(), SeaSerpentArrowEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.CHAIN_TIE.get(), ChainTieEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.PIXIE_CHARGE.get(), NothingEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.TIDE_TRIDENT.get(), TideTridentEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.MOB_SKULL.get(), MobSkullEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_SCUTTLER.get(), DreadScuttlerEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_GHOUL.get(), DreadGhoulEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_BEAST.get(), DreadBeastEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_SCUTTLER.get(), DreadScuttlerEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_THRALL.get(), DreadThrallEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_LICH.get(), DreadLichEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_LICH_SKULL.get(), DreadLichSkullEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_KNIGHT.get(), DreadKnightEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.DREAD_HORSE.get(), DreadHorseEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.HYDRA.get(), HydraEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.HYDRA_BREATH.get(), NothingEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.HYDRA_ARROW.get(), HydraArrowEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.GHOST.get(), GhostEntityRenderer::new);
+        EntityRendererRegistry.register(IafEntities.GHOST_SWORD.get(), GhostSwordEntityRenderer::new);
     }
 
-    @SubscribeEvent
-    public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(IafBlockEntities.PODIUM.get(), PodiumBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(IafBlockEntities.IAF_LECTERN.get(), LecternBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(IafBlockEntities.EGG_IN_ICE.get(), EggInIceBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(IafBlockEntities.PIXIE_HOUSE.get(), PixieHouseBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(IafBlockEntities.PIXIE_JAR.get(), JarBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(IafBlockEntities.DREAD_SPAWNER.get(), DreadSpawnerBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(IafBlockEntities.GHOST_CHEST.get(), ChestRenderer::new);
+    public static void registerBlockEntityRenderers() {
+        BlockEntityRendererRegistry.register(IafBlockEntities.PODIUM.get(), PodiumBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(IafBlockEntities.IAF_LECTERN.get(), LecternBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(IafBlockEntities.EGG_IN_ICE.get(), EggInIceBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(IafBlockEntities.PIXIE_HOUSE.get(), PixieHouseBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(IafBlockEntities.PIXIE_JAR.get(), JarBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(IafBlockEntities.DREAD_SPAWNER.get(), DreadSpawnerBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(IafBlockEntities.GHOST_CHEST.get(), ChestRenderer::new);
     }
 
-    @SubscribeEvent
-    public static void registerParticleRenderers(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(IafParticles.BLOOD.get(), BloodParticle::factory);
-        event.registerSpriteSet(IafParticles.DRAGON_FLAME.get(), DragonFlameParticle::factory);
-        event.registerSpriteSet(IafParticles.DRAGON_FROST.get(), DragonFrostParticle::factory);
-        event.registerSpriteSet(IafParticles.DREAD_TORCH.get(), DreadTorchParticle::factory);
-        event.registerSpecial(IafParticles.GHOST_APPEARANCE.get(), GhostAppearanceParticle.factory());
-        event.registerSpriteSet(IafParticles.HYDRA_BREATH.get(), HydraBreathParticle::factory);
-        event.registerSpriteSet(IafParticles.PIXIE_DUST.get(), PixieDustParticle::factory);
-        event.registerSpriteSet(IafParticles.SERPENT_BUBBLE.get(), SerpentBubbleParticle::factory);
-        event.registerSpriteSet(IafParticles.SIREN_MUSIC.get(), SirenMusicParticle::factory);
+    public static void registerParticleRenderers() {
+        ParticleProviderRegistry.getInstance().register(IafParticles.BLOOD.get(), BloodParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.DRAGON_FLAME.get(), DragonFlameParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.DRAGON_FROST.get(), DragonFrostParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.DREAD_TORCH.get(), DreadTorchParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.GHOST_APPEARANCE.get(), GhostAppearanceParticle.factory());
+        ParticleProviderRegistry.getInstance().register(IafParticles.HYDRA_BREATH.get(), HydraBreathParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.PIXIE_DUST.get(), PixieDustParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.SERPENT_BUBBLE.get(), SerpentBubbleParticle::factory);
+        ParticleProviderRegistry.getInstance().register(IafParticles.SIREN_MUSIC.get(), SirenMusicParticle::factory);
     }
 
     public static void registerArmorRenderers() {

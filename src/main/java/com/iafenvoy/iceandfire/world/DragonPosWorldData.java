@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -23,7 +24,7 @@ public class DragonPosWorldData extends SavedData {
     private static final Codec<DragonPosWorldData> CODEC = DRAGON_POSITION_CODEC.listOf().optionalFieldOf("DragonMap", List.of())
             .xmap(DragonPosWorldData::new, DragonPosWorldData::entries).codec();
     private static final SavedDataType<DragonPosWorldData> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath("iceandfire", "dragon_positions"), DragonPosWorldData::new, CODEC
+            Identifier.fromNamespaceAndPath("iceandfire", "dragon_positions"), DragonPosWorldData::new, CODEC, DataFixTypes.SAVED_DATA_RANDOM_SEQUENCES
     );
     protected final Map<UUID, BlockPos> lastDragonPositions = new HashMap<>();
 

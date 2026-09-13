@@ -1,8 +1,8 @@
 package com.iafenvoy.iceandfire.event;
 
 import com.iafenvoy.iceandfire.entity.DragonBaseEntity;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import com.iafenvoy.iceandfire.fabric.event.Event;
+import com.iafenvoy.iceandfire.fabric.event.ICancellableEvent;
 
 public final class DragonFireEvent extends Event implements ICancellableEvent {
     private final DragonBaseEntity dragon;

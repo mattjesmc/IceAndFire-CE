@@ -5,8 +5,8 @@ import com.iafenvoy.iceandfire.recipe.DragonForgeRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 
 public final class IafRecipes {
     public static final DeferredRegister<RecipeType<?>> REGISTRY = DeferredRegister.create(Registries.RECIPE_TYPE, IceAndFire.MOD_ID);

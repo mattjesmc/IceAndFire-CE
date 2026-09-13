@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.iafenvoy.iceandfire.fabric.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

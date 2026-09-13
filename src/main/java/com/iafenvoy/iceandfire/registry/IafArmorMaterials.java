@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -26,7 +27,7 @@ public final class IafArmorMaterials {
     public static final Holder<ArmorMaterial> COPPER = register("copper", new int[]{1, 3, 4, 2}, 15, SoundEvents.ARMOR_EQUIP_GOLD, 0, new MemorizeSupplier<>(() -> Ingredient.of(Items.COPPER_INGOT)));
     public static final Holder<ArmorMaterial> SILVER = register("silver", new int[]{1, 4, 5, 2}, 20, SoundEvents.ARMOR_EQUIP_CHAIN, 0, new MemorizeSupplier<>(() -> Ingredient.of(Items.IRON_INGOT)));
     public static final Holder<ArmorMaterial> BLINDFOLD = register("blindfold", new int[]{1, 1, 1, 1}, 10, SoundEvents.ARMOR_EQUIP_LEATHER, 0, new MemorizeSupplier<>(() -> Ingredient.of(Items.STRING)));
-    public static final Holder<ArmorMaterial> SHEEP = register("sheep", new int[]{1, 3, 2, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0, new MemorizeSupplier<>(() -> Ingredient.of(Blocks.WHITE_WOOL)));
+    public static final Holder<ArmorMaterial> SHEEP = register("sheep", new int[]{1, 3, 2, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0, new MemorizeSupplier<>(() -> Ingredient.of(Blocks.WOOL.pick(DyeColor.WHITE))));
     public static final Holder<ArmorMaterial> EARPLUGS = register("earplugs", new int[]{1, 1, 1, 1}, 10, SoundEvents.ARMOR_EQUIP_LEATHER, 0, new MemorizeSupplier<>(() -> Ingredient.of(Blocks.OAK_BUTTON)));
     public static final Holder<ArmorMaterial> DEATHWORM_YELLOW = register("deathworm_yellow", new int[]{2, 5, 7, 3}, 5, SoundEvents.ARMOR_EQUIP_LEATHER, 1.5F, new MemorizeSupplier<>(() -> Ingredient.of(IafItems.DEATH_WORM_CHITIN_YELLOW.get())));
     public static final Holder<ArmorMaterial> DEATHWORM_WHITE = register("deathworm_white", new int[]{2, 5, 7, 3}, 5, SoundEvents.ARMOR_EQUIP_LEATHER, 1.5F, new MemorizeSupplier<>(() -> Ingredient.of(IafItems.DEATH_WORM_CHITIN_RED.get())));

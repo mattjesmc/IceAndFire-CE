@@ -37,6 +37,7 @@ public class GhostSwordEntityRenderer extends EntityRenderer<GhostSwordEntity, L
     @Override
     public void extractRenderState(GhostSwordEntity entity, LegacyEntityRenderState<GhostSwordEntity> state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
+        state.partialTick = partialTicks;
         state.entity = entity;
     }
 

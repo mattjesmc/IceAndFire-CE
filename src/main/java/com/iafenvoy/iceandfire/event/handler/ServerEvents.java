@@ -20,10 +20,19 @@ import com.iafenvoy.iceandfire.registry.tag.IafEntityTags;
 import com.iafenvoy.iceandfire.util.EntityDataHelper;
 import com.iafenvoy.uranus.object.RegistryHelper;
 import com.iafenvoy.uranus.util.RandomHelper;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
@@ -42,31 +51,42 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.AbstractChestBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@EventBusSubscriber
+/**
+ * Gameplay hooks. NeoForge's event subscribers are mapped onto Fabric API events here; the damage modifier hook
+ * (formerly {@code LivingDamageEvent.Pre}) is driven by {@code LivingEntityMixin}.
+ */
 public final class ServerEvents {
     public static final UUID ALEX_UUID = UUID.fromString("71363abe-fd03-49c9-940d-aae8b8209b7c");
     public static final String BOLT_DONT_DESTROY_LOOT = "iceandfire.bolt_skip_loot";
     private static final Predicate<LivingEntity> VILLAGER_FEAR = entity -> entity instanceof IVillagerFear fear && fear.shouldFear();
+
+    private ServerEvents() {
+    }
+
+    public static void init() {
+        EntityTrackingEvents.START_TRACKING.register(ServerEvents::onStartTracking);
+        AttackEntityCallback.EVENT.register(ServerEvents::onPlayerAttack);
+        ServerLivingEntityEvents.AFTER_DEATH.register(ServerEvents::onEntityDie);
+        UseEntityCallback.EVENT.register(ServerEvents::onEntityInteract);
+        UseBlockCallback.EVENT.register(ServerEvents::onPlayerRightClick);
+        PlayerBlockBreakEvents.BEFORE.register(ServerEvents::onBreakBlock);
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> onPlayerLeave(handler.player));
+        ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> onEntityJoinWorld(entity));
+    }
 
     private static void signalChickenAlarm(LivingEntity chicken, LivingEntity attacker) {
         final float d0 = IafCommonConfig.INSTANCE.cockatrice.chickenSearchLength.getValue();
@@ -110,11 +130,12 @@ public final class ServerEvents {
         return false;
     }
 
-    @SubscribeEvent
-    public static void onEntityDamage(LivingDamageEvent.Pre event) {
-        LivingEntity entity = event.getEntity();
-        DamageSource source = event.getSource();
-        float amount = event.getNewDamage();
+    /**
+     * Formerly the two {@code LivingDamageEvent.Pre} handlers; invoked from {@code LivingEntityMixin#actuallyHurt}.
+     *
+     * @return the damage amount to apply
+     */
+    public static float modifyDamage(LivingEntity entity, DamageSource source, float amount) {
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
             float multi = 1;
             if (entity.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof TrollArmorItem)
@@ -143,24 +164,24 @@ public final class ServerEvents {
                 multi -= 0.1f;
             amount *= multi;
         }
-        event.setNewDamage(amount);
+        if (source.is(DamageTypes.LIGHTNING_BOLT) &&
+                entity.getItemBySlot(EquipmentSlot.HEAD).is(IafItems.DRAGONSTEEL_LIGHTNING_HELMET.get()) &&
+                entity.getItemBySlot(EquipmentSlot.CHEST).is(IafItems.DRAGONSTEEL_LIGHTNING_CHESTPLATE.get()) &&
+                entity.getItemBySlot(EquipmentSlot.LEGS).is(IafItems.DRAGONSTEEL_LIGHTNING_LEGGINGS.get()) &&
+                entity.getItemBySlot(EquipmentSlot.FEET).is(IafItems.DRAGONSTEEL_LIGHTNING_BOOTS.get()))
+            amount = 0;
+        return amount;
     }
 
-    @SubscribeEvent
-    public static void onLivingSetTarget(PlayerEvent.StartTracking event) {
-        Player player = event.getEntity();
-        if (event.getTarget() instanceof LivingEntity target) {
+    private static void onStartTracking(Entity tracked, ServerPlayer player) {
+        if (tracked instanceof LivingEntity target) {
             if (BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(target.getType()).is(IafEntityTags.CHICKENS))
                 signalChickenAlarm(target, player);
             else if (DragonUtils.isVillager(target)) signalAmphithereAlarm(target, player);
         }
     }
 
-    @SubscribeEvent
-    public static void onPlayerAttack(AttackEntityEvent event) {
-        Player player = event.getEntity();
-        Level world = event.getEntity().level();
-        Entity entity = event.getTarget();
+    private static InteractionResult onPlayerAttack(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult) {
         if (BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(entity.getType()).is(IafEntityTags.SHEEP)) {
             float dist = IafCommonConfig.INSTANCE.cyclops.sheepSearchLength.getValue();
             final List<Entity> list = entity.level().getEntities(entity, entity.getBoundingBox().inflate(dist, dist, dist));
@@ -194,19 +215,18 @@ public final class ServerEvents {
                     statue.remove(Entity.RemovalReason.KILLED);
                 }
             }
-            event.setCanceled(true);
-            return;
+            // Cancel the vanilla attack
+            return InteractionResult.FAIL;
         }
         if (entity instanceof LivingEntity livingEntity) {
             if (BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(entity.getType()).is(IafEntityTags.CHICKENS))
                 signalChickenAlarm(livingEntity, player);
             else if (DragonUtils.isVillager(entity)) signalAmphithereAlarm(livingEntity, player);
         }
+        return InteractionResult.PASS;
     }
 
-    @SubscribeEvent
-    public static void onEntityDie(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntity();
+    private static void onEntityDie(LivingEntity entity, DamageSource source) {
         if (entity.level().isClientSide()) return;
 
         ChainData chainData = ChainData.get(entity);
@@ -249,11 +269,12 @@ public final class ServerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onEntityInteract(PlayerInteractEvent.EntityInteractSpecific event) {
-        Player player = event.getEntity();
-        Entity entity = event.getTarget();
-        InteractionHand hand = event.getHand();
+    /**
+     * Formerly {@code PlayerInteractEvent.EntityInteractSpecific}. Fabric fires {@link UseEntityCallback} for both
+     * the positional and the plain interaction; the multipart branch only reacts to the positional one so the horn
+     * is not used twice.
+     */
+    private static InteractionResult onEntityInteract(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult) {
         // Handle chain removal
         if (entity instanceof LivingEntity target && !player.isSpectator()) {
             ChainData chainData = ChainData.get(target);
@@ -261,24 +282,21 @@ public final class ServerEvents {
                 chainData.removeChain(player.getUUID());
                 if (player.level() instanceof ServerLevel serverLevel)
                     entity.spawnAtLocation(serverLevel, new ItemStack(IafItems.CHAIN.get()), 1.0F);
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                return;
+                return InteractionResult.SUCCESS;
             }
         }
         // Handle multipart
-        if (entity instanceof MultipartPartEntity multipart) {
+        if (hitResult != null && entity instanceof MultipartPartEntity<?> multipart) {
             //FIXME::Don't run in item class?
             // Handle some dragon items
             if (player.getItemInHand(hand).getItem() instanceof DragonHornItem horn && multipart.getParent() instanceof LivingEntity living)
                 horn.interactLivingEntity(player.getItemInHand(hand), player, living, hand);
         }
+        return InteractionResult.PASS;
     }
 
-    @SubscribeEvent
-    public static void onPlayerRightClick(PlayerInteractEvent.RightClickBlock event) {
-        Player player = event.getEntity();
-        BlockPos pos = event.getPos();
-        Level world = player.level();
+    private static InteractionResult onPlayerRightClick(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
         if (world.getBlockState(pos).getBlock() instanceof AbstractChestBlock && !player.isCreative()) {
             float dist = IafCommonConfig.INSTANCE.dragon.goldSearchLength.getValue();
             final List<Entity> list = world.getEntities(player, player.getBoundingBox().inflate(dist, dist, dist));
@@ -293,17 +311,14 @@ public final class ServerEvents {
         }
         if (world.getBlockState(pos).getBlock() instanceof WallBlock)
             ChainItem.attachToFence(player, world, pos);
+        return InteractionResult.PASS;
     }
 
-    @SubscribeEvent
-    public static void onBreakBlock(BreakBlockEvent event) {
-        LevelAccessor world = event.getLevel();
-        BlockState state = event.getState();
-        Player player = event.getPlayer();
+    private static boolean onBreakBlock(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
         if (state.getBlock() instanceof AbstractChestBlock || state.is(IafBlocks.GOLD_PILE.get()) || state.is(IafBlocks.SILVER_PILE.get()) || state.is(IafBlocks.COPPER_PILE.get())) {
             final float dist = IafCommonConfig.INSTANCE.dragon.goldSearchLength.getValue();
             List<Entity> list = world.getEntities(player, player.getBoundingBox().inflate(dist, dist, dist));
-            if (list.isEmpty()) return;
+            if (list.isEmpty()) return true;
 
             for (Entity entity : list)
                 if (entity instanceof DragonBaseEntity dragon)
@@ -313,19 +328,16 @@ public final class ServerEvents {
                         dragon.setTarget(player);
                     }
         }
+        return true;
     }
 
-    @SubscribeEvent
-    public static void onPlayerLeaveEvent(PlayerEvent.PlayerLoggedOutEvent event) {
-        Player player = event.getEntity();
+    private static void onPlayerLeave(ServerPlayer player) {
         if (!player.getPassengers().isEmpty())
             for (Entity entity : player.getPassengers())
                 entity.stopRiding();
     }
 
-    @SubscribeEvent
-    public static boolean onEntityJoinWorld(EntityJoinLevelEvent event) {
-        Entity entity = event.getEntity();
+    private static void onEntityJoinWorld(Entity entity) {
         if (entity instanceof Mob mob)
             try {
                 if (BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(mob.getType()).is(IafEntityTags.SHEEP) && mob instanceof Animal animal)
@@ -339,18 +351,5 @@ public final class ServerEvents {
             } catch (Exception e) {
                 IceAndFire.LOGGER.warn("Tried to add unique behaviors to vanilla mobs and encountered an error");
             }
-        return true;
-    }
-
-    @SubscribeEvent
-    public static void onLivingHurt(LivingDamageEvent.Pre event) {
-        LivingEntity entity = event.getEntity();
-        DamageSource source = event.getSource();
-        if (source.is(DamageTypes.LIGHTNING_BOLT) &&
-                entity.getItemBySlot(EquipmentSlot.HEAD).is(IafItems.DRAGONSTEEL_LIGHTNING_HELMET.get()) &&
-                entity.getItemBySlot(EquipmentSlot.CHEST).is(IafItems.DRAGONSTEEL_LIGHTNING_CHESTPLATE.get()) &&
-                entity.getItemBySlot(EquipmentSlot.LEGS).is(IafItems.DRAGONSTEEL_LIGHTNING_LEGGINGS.get()) &&
-                entity.getItemBySlot(EquipmentSlot.FEET).is(IafItems.DRAGONSTEEL_LIGHTNING_BOOTS.get()))
-            event.setNewDamage(0);
     }
 }

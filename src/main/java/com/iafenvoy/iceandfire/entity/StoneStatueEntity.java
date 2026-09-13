@@ -2,6 +2,7 @@ package com.iafenvoy.iceandfire.entity;
 
 import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.entity.util.BlacklistedFromStatues;
+import com.iafenvoy.iceandfire.fabric.VanillaCompat;
 import com.iafenvoy.iceandfire.mixin.LivingEntityAccessor;
 import com.iafenvoy.iceandfire.registry.IafEntities;
 import com.iafenvoy.iceandfire.registry.IafMobEffects;
@@ -17,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -104,7 +106,7 @@ public class StoneStatueEntity extends LivingEntity implements BlacklistedFromSt
     }
 
     public EntityType<?> getTrappedEntityType() {
-        return EntityType.byString(this.getTrappedEntityTypeString()).orElse(EntityType.PIG);
+        return VanillaCompat.entityTypeByString(this.getTrappedEntityTypeString()).orElse(EntityTypes.PIG);
     }
 
     public String getTrappedEntityTypeString() {
@@ -208,7 +210,7 @@ public class StoneStatueEntity extends LivingEntity implements BlacklistedFromSt
 
     private void tryDepetrify(ServerLevel level) {
         EntityType<?> entityType = this.getTrappedEntityType();
-        if (entityType == EntityType.PLAYER || entityType.builtInRegistryHolder().is(IafEntityTags.NO_DEPETRIFY))
+        if (entityType == EntityTypes.PLAYER || entityType.builtInRegistryHolder().is(IafEntityTags.NO_DEPETRIFY))
             return;
 
         CompoundTag entityTag = this.getTrappedTag();

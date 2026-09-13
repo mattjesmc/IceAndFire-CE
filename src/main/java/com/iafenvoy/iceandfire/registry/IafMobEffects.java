@@ -6,8 +6,8 @@ import com.iafenvoy.iceandfire.effect.FrozenStatusEffect;
 import com.iafenvoy.iceandfire.effect.SirenCharmStatusEffect;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 
 import java.util.function.Supplier;
 

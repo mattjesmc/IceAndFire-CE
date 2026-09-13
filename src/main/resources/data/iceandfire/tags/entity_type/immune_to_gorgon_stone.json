@@ -5,7 +5,7 @@
       "required": false
     },
     {
-      "id": "#neoforge:bosses",
+      "id": "#c:bosses",
       "required": false
     },
     "minecraft:warden"

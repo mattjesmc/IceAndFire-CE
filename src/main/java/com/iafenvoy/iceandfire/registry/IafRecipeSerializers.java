@@ -4,8 +4,8 @@ import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.recipe.DragonForgeRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 
 import java.util.function.Supplier;
 

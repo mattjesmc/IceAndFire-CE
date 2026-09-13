@@ -1,6 +1,7 @@
 package com.iafenvoy.iceandfire.item;
 
 import com.iafenvoy.iceandfire.entity.StoneStatueEntity;
+import com.iafenvoy.iceandfire.fabric.VanillaCompat;
 import com.iafenvoy.iceandfire.item.component.StoneStatusComponent;
 import com.iafenvoy.iceandfire.registry.IafDataComponents;
 import com.iafenvoy.iceandfire.registry.IafEntities;
@@ -35,7 +36,7 @@ public class StoneStatueItem extends Item {
         super.appendHoverText(stack, context, display, tooltip, type);
         if (stack.has(IafDataComponents.STONE_STATUS.get())) {
             StoneStatusComponent component = stack.get(IafDataComponents.STONE_STATUS.get());
-            Optional<EntityType<?>> optional = EntityType.byString(component.entityType());
+            Optional<EntityType<?>> optional = VanillaCompat.entityTypeByString(component.entityType());
             if (optional.isPresent()) {
                 MutableComponent untranslated;
                 if (component.isPlayer()) untranslated = Component.translatable("entity.minecraft.player");

@@ -22,8 +22,8 @@ import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredItem;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 
 import java.util.function.Supplier;
 

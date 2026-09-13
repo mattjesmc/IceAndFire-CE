@@ -70,7 +70,7 @@ public class DeathwormGauntletItem extends Item {
                 boolean canSee = d1 > 1.0D - 0.5D / d0 && player.hasLineOfSight(livingEntity);
                 if (canSee) {
                     livingEntity.hurt(world.damageSources.playerAttack(player), 3F);
-                    livingEntity.knockback(0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ());
+                    livingEntity.knockback(0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ(), null, 0.0F);
                 }
             }
             player.getCooldowns().addCooldown(stack, 20);

@@ -54,7 +54,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.NeoForge;
+import com.iafenvoy.iceandfire.fabric.event.IafEventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -358,7 +358,7 @@ public class TrollEntity extends Monster implements IAnimatedEntity, IVillagerFe
                 float weaponX = (float) (this.getX() + 1.9F * Mth.cos((float) ((this.yBodyRot + 90) * Math.PI / 180)));
                 float weaponZ = (float) (this.getZ() + 1.9F * Mth.sin((float) ((this.yBodyRot + 90) * Math.PI / 180)));
                 float weaponY = (float) (this.getY() + (this.getEyeHeight() / 2));
-                if (!NeoForge.EVENT_BUS.post(new GriefBreakBlockEvent(this, weaponX, weaponY, weaponZ)).isCanceled()) {
+                if (!IafEventBus.post(new GriefBreakBlockEvent(this, weaponX, weaponY, weaponZ)).isCanceled()) {
                     this.level().explode(this, weaponX, weaponY, weaponZ, 1F + this.getRandom().nextFloat(), false, Level.ExplosionInteraction.NONE);
                 }
                 this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, 1);

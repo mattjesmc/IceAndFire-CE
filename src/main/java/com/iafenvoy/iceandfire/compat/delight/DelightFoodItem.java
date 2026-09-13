@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -18,7 +18,7 @@ public class DelightFoodItem extends Item {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag type) {
         super.appendHoverText(stack, context, display, tooltip, type);
-        if (!ModList.get().isLoaded("farmersdelight"))
+        if (!FabricLoader.getInstance().isModLoaded("farmersdelight"))
             tooltip.accept(Component.translatable("item.iceandfire.tooltip.require.delight"));
     }
 }

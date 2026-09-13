@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:hippocampus_fin"
+      "id": "iceandfire:hippocampus_fin"
     },
     "title": {
       "translate": "advancements.iceandfire.tame_hippocampus.title"
@@ -16,7 +16,7 @@
       "trigger": "minecraft:tame_animal",
       "conditions": {
         "entity": {
-          "type": "iceandfire:hippocampus"
+          "minecraft:entity_type": "iceandfire:hippocampus"
         }
       }
     }

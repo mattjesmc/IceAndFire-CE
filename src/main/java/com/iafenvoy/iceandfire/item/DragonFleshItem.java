@@ -6,6 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
@@ -30,7 +31,7 @@ public class DragonFleshItem extends Item {
             else if (this.type == IafDragonTypes.ICE)
                 living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
             else {
-                LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(living.level(), EntitySpawnReason.EVENT);
+                LightningBolt lightning = EntityTypes.LIGHTNING_BOLT.create(living.level(), EntitySpawnReason.EVENT);
                 assert lightning != null;
                 lightning.snapTo(living.position());
                 living.level().addFreshEntity(lightning);

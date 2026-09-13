@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.NeoForge;
+import com.iafenvoy.iceandfire.fabric.event.IafEventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -43,7 +43,7 @@ public class DragonSkullEntityRenderer extends EntityRenderer<DragonSkullEntity,
         this.models.put(IafDragonTypes.FIRE, Pair.of(IafRenderers.FIRE_DRAGON, new MemorizeSupplier<>(FireDragonTabulaModelAnimator::new)));
         this.models.put(IafDragonTypes.ICE, Pair.of(IafRenderers.ICE_DRAGON, new MemorizeSupplier<>(IceDragonTabulaModelAnimator::new)));
         this.models.put(IafDragonTypes.LIGHTNING, Pair.of(IafRenderers.LIGHTNING_DRAGON, new MemorizeSupplier<>(LightningTabulaDragonAnimator::new)));
-        NeoForge.EVENT_BUS.post(new CollectDragonSkullModelEvent(this.models));
+        IafEventBus.post(new CollectDragonSkullModelEvent(this.models));
     }
 
     private static void setRotationAngles(BasicModelPart cube, float rotX) {

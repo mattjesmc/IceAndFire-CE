@@ -77,6 +77,7 @@ public abstract class LegacyMobRenderer<T extends Mob, M extends AdvancedEntityM
     @Override
     public void extractRenderState(T entity, LegacyEntityRenderState<T> state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
+        state.partialTick = partialTicks;
         state.entity = entity;
         state.hasRedOverlay = entity.hurtTime > 0 || entity.deathTime > 0;
         if (entity.isAlive()) {

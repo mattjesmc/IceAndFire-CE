@@ -10,17 +10,13 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.world.entity.SpawnPlacements;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 
 import java.util.function.Supplier;
 
-@EventBusSubscriber
 public final class IafEntities {
     public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(Registries.ENTITY_TYPE, IceAndFire.MOD_ID);
 
@@ -88,58 +84,48 @@ public final class IafEntities {
         return REGISTRY.register(entityName, builder);
     }
 
-    @SubscribeEvent
-    public static void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(DRAGON_EGG.get(), DragonEggEntity.bakeAttributes().build());
-        event.put(DRAGON_SKULL.get(), DragonSkullEntity.bakeAttributes().build());
-        event.put(FIRE_DRAGON.get(), FireDragonEntity.bakeAttributes().build());
-        event.put(ICE_DRAGON.get(), IceDragonEntity.bakeAttributes().build());
-        event.put(LIGHTNING_DRAGON.get(), LightningDragonEntity.bakeAttributes().build());
-        event.put(HIPPOGRYPH.get(), HippogryphEntity.bakeAttributes().build());
-        event.put(GORGON.get(), GorgonEntity.bakeAttributes().build());
-        event.put(STONE_STATUE.get(), StoneStatueEntity.bakeAttributes().build());
-        event.put(PIXIE.get(), PixieEntity.bakeAttributes().build());
-        event.put(CYCLOPS.get(), CyclopsEntity.bakeAttributes().build());
-        event.put(SIREN.get(), SirenEntity.bakeAttributes().build());
-        event.put(HIPPOCAMPUS.get(), HippocampusEntity.bakeAttributes().build());
-        event.put(DEATH_WORM.get(), DeathWormEntity.bakeAttributes().build());
-        event.put(COCKATRICE.get(), CockatriceEntity.bakeAttributes().build());
-        event.put(STYMPHALIAN_BIRD.get(), StymphalianBirdEntity.bakeAttributes().build());
-        event.put(TROLL.get(), TrollEntity.bakeAttributes().build());
-        event.put(AMPHITHERE.get(), AmphithereEntity.bakeAttributes().build());
-        event.put(SEA_SERPENT.get(), SeaSerpentEntity.bakeAttributes().build());
-        event.put(MOB_SKULL.get(), MobSkullEntity.bakeAttributes().build());
-        event.put(DREAD_THRALL.get(), DreadThrallEntity.bakeAttributes().build());
-        event.put(DREAD_LICH.get(), DreadLichEntity.bakeAttributes().build());
-        event.put(DREAD_BEAST.get(), DreadBeastEntity.bakeAttributes().build());
-        event.put(DREAD_HORSE.get(), DreadHorseEntity.bakeAttributes().build());
-        event.put(DREAD_GHOUL.get(), DreadGhoulEntity.bakeAttributes().build());
-        event.put(DREAD_KNIGHT.get(), DreadKnightEntity.bakeAttributes().build());
-        event.put(DREAD_SCUTTLER.get(), DreadScuttlerEntity.bakeAttributes().build());
-        event.put(HYDRA.get(), HydraEntity.bakeAttributes().build());
-        event.put(GHOST.get(), GhostEntity.bakeAttributes().build());
+    public static void registerAttributes() {
+        FabricDefaultAttributeRegistry.register(DRAGON_EGG.get(), DragonEggEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DRAGON_SKULL.get(), DragonSkullEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(FIRE_DRAGON.get(), FireDragonEntity.bakeAttributes().add(IafAttributes.DRAGON_FORGE_SPEED.holder(), 0.025).build());
+        FabricDefaultAttributeRegistry.register(ICE_DRAGON.get(), IceDragonEntity.bakeAttributes().add(IafAttributes.DRAGON_FORGE_SPEED.holder(), 0.025).build());
+        FabricDefaultAttributeRegistry.register(LIGHTNING_DRAGON.get(), LightningDragonEntity.bakeAttributes().add(IafAttributes.DRAGON_FORGE_SPEED.holder(), 0.025).build());
+        FabricDefaultAttributeRegistry.register(HIPPOGRYPH.get(), HippogryphEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(GORGON.get(), GorgonEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(STONE_STATUE.get(), StoneStatueEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(PIXIE.get(), PixieEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(CYCLOPS.get(), CyclopsEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(SIREN.get(), SirenEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(HIPPOCAMPUS.get(), HippocampusEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DEATH_WORM.get(), DeathWormEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(COCKATRICE.get(), CockatriceEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(STYMPHALIAN_BIRD.get(), StymphalianBirdEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(TROLL.get(), TrollEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(AMPHITHERE.get(), AmphithereEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(SEA_SERPENT.get(), SeaSerpentEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(MOB_SKULL.get(), MobSkullEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_THRALL.get(), DreadThrallEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_LICH.get(), DreadLichEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_BEAST.get(), DreadBeastEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_HORSE.get(), DreadHorseEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_GHOUL.get(), DreadGhoulEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_KNIGHT.get(), DreadKnightEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(DREAD_SCUTTLER.get(), DreadScuttlerEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(HYDRA.get(), HydraEntity.bakeAttributes().build());
+        FabricDefaultAttributeRegistry.register(GHOST.get(), GhostEntity.bakeAttributes().build());
     }
 
-    //Attribute Fix
-    @SubscribeEvent
-    public static void modifyDefaultAttributes(EntityAttributeModificationEvent event) {
-        event.add(FIRE_DRAGON.get(), IafAttributes.DRAGON_FORGE_SPEED, 0.025);
-        event.add(ICE_DRAGON.get(), IafAttributes.DRAGON_FORGE_SPEED, 0.025);
-        event.add(LIGHTNING_DRAGON.get(), IafAttributes.DRAGON_FORGE_SPEED, 0.025);
-    }
-
-    @SubscribeEvent
-    public static void registerPlacements(RegisterSpawnPlacementsEvent event) {
-        event.register(HIPPOGRYPH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, HippogryphEntity::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(TROLL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, TrollEntity::canTrollSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_LICH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DreadLichEntity::canLichSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(COCKATRICE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, CockatriceEntity::canCockatriceSpawn, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(AMPHITHERE.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, AmphithereEntity::canAmphithereSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_KNIGHT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_BEAST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_THRALL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_GHOUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_SCUTTLER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_HORSE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+    public static void registerPlacements() {
+        SpawnPlacements.register(HIPPOGRYPH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, HippogryphEntity::checkMobSpawnRules);
+        SpawnPlacements.register(TROLL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, TrollEntity::canTrollSpawnOn);
+        SpawnPlacements.register(DREAD_LICH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DreadLichEntity::canLichSpawnOn);
+        SpawnPlacements.register(COCKATRICE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, CockatriceEntity::canCockatriceSpawn);
+        SpawnPlacements.register(AMPHITHERE.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, AmphithereEntity::canAmphithereSpawnOn);
+        SpawnPlacements.register(DREAD_KNIGHT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules);
+        SpawnPlacements.register(DREAD_BEAST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules);
+        SpawnPlacements.register(DREAD_THRALL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules);
+        SpawnPlacements.register(DREAD_GHOUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules);
+        SpawnPlacements.register(DREAD_SCUTTLER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules);
+        SpawnPlacements.register(DREAD_HORSE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mob::checkMobSpawnRules);
     }
 }

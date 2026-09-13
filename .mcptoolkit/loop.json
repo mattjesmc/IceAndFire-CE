@@ -1,0 +1,6 @@
+{
+  "_": "The project loop file (docs/guides/LOOPS.md). `checks` run after editing tools and once more after a unit session; `unit.start` runs before one. Written once by toolkitInit; yours.",
+  "checks": [
+    { "name": "assets", "run": ["./gradlew.bat", "-q", "checkAssets"], "timeout_ms": 120000 }
+  ]
+}

@@ -1,58 +1,61 @@
 package com.iafenvoy.iceandfire;
 
 import com.iafenvoy.iceandfire.config.IafClientConfig;
-import com.iafenvoy.iceandfire.config.IafCommonConfig;
+import com.iafenvoy.iceandfire.event.handler.ClientEvents;
+import com.iafenvoy.iceandfire.fabric.network.ClientReceivers;
+import com.iafenvoy.iceandfire.recipe.DragonForgeRecipeCache;
+import com.iafenvoy.iceandfire.registry.IafKeyMappings;
+import com.iafenvoy.iceandfire.registry.IafMenus;
 import com.iafenvoy.iceandfire.registry.IafRenderers;
+import com.iafenvoy.iceandfire.render.SirenShaderRenderHelper;
+import com.iafenvoy.iceandfire.screen.gui.*;
+import com.iafenvoy.iceandfire.screen.gui.bestiary.BestiaryScreen;
 import com.iafenvoy.jupiter.ConfigManager;
-import com.iafenvoy.jupiter.render.screen.ConfigSelectScreen;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 
-@Mod(value = IceAndFire.MOD_ID, dist = Dist.CLIENT)
-@EventBusSubscriber(
-        modid = IceAndFire.MOD_ID,
-        value = Dist.CLIENT
-)
-public class IceAndFireClient {
-    public IceAndFireClient() {
-        ConfigManager.getInstance().registerConfigHandler(IafClientConfig.INSTANCE);
-
+@Environment(EnvType.CLIENT)
+public final class IceAndFireClient {
+    private IceAndFireClient() {
     }
 
     /**
-     * Uranus snapshots {@code IArmorRendererBase.RENDERERS} during this event,
-     * which fires while Minecraft is constructed — well before {@link FMLClientSetupEvent}.
+     * Client initialization, called once from the Fabric {@code client} entrypoint (after {@link IceAndFire#init()}).
      */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        IafRenderers.registerArmorRenderers();
-    }
+    public static void init() {
+        ConfigManager.getInstance().registerConfigHandler(IafClientConfig.INSTANCE);
 
-    @SubscribeEvent
-    public static void init(FMLClientSetupEvent event) {
         IafRenderers.registerModelPredicates();
         IafRenderers.registerArmorRenderers();
         IafRenderers.registerItemRenderers();
+        IafRenderers.registerEntityRenderers();
+        IafRenderers.registerBlockEntityRenderers();
+        IafRenderers.registerParticleRenderers();
+        registerScreens();
 
+        IafKeyMappings.init();
+        ClientReceivers.register();
+        ClientEvents.init();
+        SirenShaderRenderHelper.init();
+        DragonForgeRecipeCache.init();
 
-        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (container, parent) -> ConfigSelectScreen.builder(Component.translatable("config.iceandfire.title"), parent).server(IafCommonConfig.INSTANCE).client(IafClientConfig.INSTANCE).build());
+        FabricLoader.getInstance().getModContainer(IceAndFire.MOD_ID).ifPresent(container ->
+                ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "iaf_legacy"), container, Component.translatable("resourcePack.iceandfire.legacy.name"), PackActivationType.NORMAL));
     }
 
-    @SubscribeEvent
-    public static void onAddPackFinders(AddPackFindersEvent event) {
-        event.addPackFinders(Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "resourcepacks/iaf_legacy"), PackType.CLIENT_RESOURCES, Component.translatable("resourcePack.iceandfire.legacy.name"), PackSource.BUILT_IN, false, Pack.Position.TOP);
+    private static void registerScreens() {
+        MenuScreens.register(IafMenus.IAF_LECTERN_SCREEN.get(), LecternScreen::new);
+        MenuScreens.register(IafMenus.PODIUM_SCREEN.get(), PodiumScreen::new);
+        MenuScreens.register(IafMenus.DRAGON_SCREEN.get(), DragonScreen::new);
+        MenuScreens.register(IafMenus.HIPPOGRYPH_SCREEN.get(), HippogryphScreen::new);
+        MenuScreens.register(IafMenus.HIPPOCAMPUS_SCREEN.get(), HippocampusScreen::new);
+        MenuScreens.register(IafMenus.DRAGON_FORGE_SCREEN.get(), DragonForgeScreen::new);
+        MenuScreens.register(IafMenus.BESTIARY_SCREEN.get(), BestiaryScreen::new);
     }
 }

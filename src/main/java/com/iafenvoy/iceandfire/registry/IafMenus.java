@@ -1,24 +1,20 @@
 package com.iafenvoy.iceandfire.registry;
 
 import com.iafenvoy.iceandfire.IceAndFire;
-import com.iafenvoy.iceandfire.screen.gui.*;
-import com.iafenvoy.iceandfire.screen.gui.bestiary.BestiaryScreen;
+import com.iafenvoy.iceandfire.fabric.menu.IMenuTypeExtension;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredRegister;
 import com.iafenvoy.iceandfire.screen.menu.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-@EventBusSubscriber(Dist.CLIENT)
+/**
+ * Menu types. Screens are bound client-side in {@link com.iafenvoy.iceandfire.IceAndFireClient}.
+ */
 public final class IafMenus {
     public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(Registries.MENU, IceAndFire.MOD_ID);
 
@@ -32,16 +28,5 @@ public final class IafMenus {
 
     private static <C extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<C>> register(String name, Supplier<MenuType<C>> type) {
         return REGISTRY.register(name, type);
-    }
-
-    @SubscribeEvent
-    public static void registerGui(RegisterMenuScreensEvent event) {
-        event.register(IAF_LECTERN_SCREEN.get(), LecternScreen::new);
-        event.register(PODIUM_SCREEN.get(), PodiumScreen::new);
-        event.register(DRAGON_SCREEN.get(), DragonScreen::new);
-        event.register(HIPPOGRYPH_SCREEN.get(), HippogryphScreen::new);
-        event.register(HIPPOCAMPUS_SCREEN.get(), HippocampusScreen::new);
-        event.register(DRAGON_FORGE_SCREEN.get(), DragonForgeScreen::new);
-        event.register(BESTIARY_SCREEN.get(), BestiaryScreen::new);
     }
 }

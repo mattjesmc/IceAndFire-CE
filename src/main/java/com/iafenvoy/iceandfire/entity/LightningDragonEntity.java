@@ -213,7 +213,7 @@ public class LightningDragonEntity extends DragonBaseEntity {
 
     @Override
     public void riderShootFire(Entity controller) {
-        if (this.getRandom().nextInt(5) == 0 && !this.isBaby()) {
+        if (this.getRandom().nextInt(5) == 0 && !this.isBabyDragon()) {
             if (this.getAnimation() != ANIMATION_FIRECHARGE)
                 this.setAnimation(ANIMATION_FIRECHARGE);
             else if (this.getAnimationTick() == 20) {

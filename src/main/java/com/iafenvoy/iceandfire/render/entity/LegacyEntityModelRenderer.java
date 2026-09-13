@@ -34,6 +34,7 @@ public abstract class LegacyEntityModelRenderer<T extends Entity, M extends Adva
     @Override
     public void extractRenderState(T entity, LegacyEntityRenderState<T> state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
+        state.partialTick = partialTicks;
         state.entity = entity;
     }
 

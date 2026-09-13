@@ -3,7 +3,7 @@ package com.iafenvoy.iceandfire.world;
 import com.iafenvoy.iceandfire.config.IafCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import com.iafenvoy.iceandfire.fabric.ServerLifecycleHooks;
 
 import java.util.Optional;
 

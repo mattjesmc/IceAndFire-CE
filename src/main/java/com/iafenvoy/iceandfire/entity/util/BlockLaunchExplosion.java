@@ -10,8 +10,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -20,14 +18,11 @@ import java.util.Deque;
 import java.util.List;
 
 /**
- * Recreates legacy exploding-block launch behavior on the 26.1 server explosion pipeline.
+ * Recreates legacy exploding-block launch behavior on the server explosion pipeline.
+ * The hook into the explosion (formerly NeoForge's {@code ExplosionEvent.Detonate}) is {@code ServerExplosionMixin}.
  */
 public final class BlockLaunchExplosion {
     private static final ThreadLocal<Deque<LaunchRequest>> ACTIVE_REQUESTS = ThreadLocal.withInitial(ArrayDeque::new);
-
-    static {
-        NeoForge.EVENT_BUS.addListener(BlockLaunchExplosion::onExplosionDetonate);
-    }
 
     private BlockLaunchExplosion() {
     }
@@ -43,7 +38,7 @@ public final class BlockLaunchExplosion {
         Deque<LaunchRequest> requests = ACTIVE_REQUESTS.get();
         requests.push(request);
         try {
-            // This preserves vanilla 26.1 damage, sounds, particles and client synchronization.
+            // This preserves vanilla damage, sounds, particles and client synchronization.
             serverLevel.explode(source, damageSource, null, x, y, z, radius, false, Level.ExplosionInteraction.MOB);
         } finally {
             requests.pop();
@@ -51,19 +46,18 @@ public final class BlockLaunchExplosion {
         }
     }
 
-    private static void onExplosionDetonate(ExplosionEvent.Detonate event) {
-        Deque<LaunchRequest> requests = ACTIVE_REQUESTS.get();
-        LaunchRequest request = requests.peek();
-        if (request == null || !request.matches(event.getExplosion())) return;
+    /**
+     * Called from {@code ServerExplosionMixin} with the positions the explosion is about to destroy.
+     *
+     * @return the positions vanilla should continue with
+     */
+    public static List<BlockPos> onExplosionDetonate(ServerExplosion explosion, List<BlockPos> affectedBlocks) {
+        LaunchRequest request = ACTIVE_REQUESTS.get().peek();
+        if (request == null || !request.matches(explosion)) return affectedBlocks;
 
-        if (!request.destroyBlocks) {
-            event.getAffectedBlocks().clear();
-            return;
-        }
+        if (!request.destroyBlocks) return new ArrayList<>();
 
-        ServerLevel level = (ServerLevel) event.getLevel();
-        List<BlockPos> affectedBlocks = new ArrayList<>(event.getAffectedBlocks());
-        event.getAffectedBlocks().clear();
+        ServerLevel level = explosion.level();
         for (BlockPos pos : affectedBlocks) {
             BlockState state = level.getBlockState(pos);
             if (state.isAir()) continue;
@@ -75,6 +69,7 @@ public final class BlockLaunchExplosion {
             double force = Math.max(0.0, 1.0 - normalizedDistance) * exposure;
             fallingBlock.setDeltaMovement(fallingBlock.getDeltaMovement().add(offset.scale(force)));
         }
+        return new ArrayList<>();
     }
 
     private record LaunchRequest(Entity source, double x, double y, double z, float radius, boolean destroyBlocks) {

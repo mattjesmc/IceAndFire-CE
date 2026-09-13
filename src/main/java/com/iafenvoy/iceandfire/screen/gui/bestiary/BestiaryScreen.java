@@ -25,6 +25,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -404,11 +405,11 @@ public class BestiaryScreen extends AbstractContainerScreen<BestiaryMenu> {
                 ms.pose().popMatrix();
 
                 this.drawItemStack(ms, new ItemStack(Items.LEATHER_HELMET), 180, 76, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 160, 76, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 199, 76, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 160, 57, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 180, 57, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 199, 57, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 160, 76, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 199, 76, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 160, 57, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 180, 57, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 199, 57, 1.35F);
                 this.drawItemStack(ms, new ItemStack(IafItems.SHEEP_HELMET.get()), 165, 45, 2F);
 
                 ms.pose().pushMatrix();
@@ -416,13 +417,13 @@ public class BestiaryScreen extends AbstractContainerScreen<BestiaryMenu> {
                 this.drawImage(ms, DRAWINGS_0, 144, 95, 389, 1, 50, 50, 512F);
                 ms.pose().popMatrix();
                 this.drawItemStack(ms, new ItemStack(Items.LEATHER_CHESTPLATE), 180, 126, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 160, 126, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 199, 126, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 160, 107, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 199, 107, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 160, 145, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 180, 145, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 199, 145, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 160, 126, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 199, 126, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 160, 107, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 199, 107, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 160, 145, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 180, 145, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 199, 145, 1.35F);
                 this.drawItemStack(ms, new ItemStack(IafItems.SHEEP_CHESTPLATE.get()), 165, 95, 2F);
             }
             if (bookPages == 2) {
@@ -436,13 +437,13 @@ public class BestiaryScreen extends AbstractContainerScreen<BestiaryMenu> {
                 this.drawImage(ms, DRAWINGS_0, 13, 24, 389, 1, 50, 50, 512F);
                 ms.pose().popMatrix();
                 this.drawItemStack(ms, new ItemStack(Items.LEATHER_LEGGINGS), 34, 46, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 14, 46, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 53, 46, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 14, 27, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 34, 27, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 53, 27, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 14, 65, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 53, 65, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 14, 46, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 53, 46, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 14, 27, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 34, 27, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 53, 27, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 14, 65, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 53, 65, 1.35F);
 
                 this.drawItemStack(ms, new ItemStack(IafItems.SHEEP_LEGGINGS.get()), 64, 27, 2F);
                 ms.pose().pushMatrix();
@@ -450,10 +451,10 @@ public class BestiaryScreen extends AbstractContainerScreen<BestiaryMenu> {
                 this.drawImage(ms, DRAWINGS_0, 13, 84, 389, 1, 50, 50, 512F);
                 ms.pose().popMatrix();
                 this.drawItemStack(ms, new ItemStack(Items.LEATHER_BOOTS), 34, 94, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 14, 113, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 53, 113, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 14, 94, 1.35F);
-                this.drawItemStack(ms, new ItemStack(Blocks.WHITE_WOOL), 53, 94, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 14, 113, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 53, 113, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 14, 94, 1.35F);
+                this.drawItemStack(ms, new ItemStack(Blocks.WOOL.pick(DyeColor.WHITE)), 53, 94, 1.35F);
                 this.drawItemStack(ms, new ItemStack(IafItems.SHEEP_BOOTS.get()), 64, 73, 2F);
             }
         } else if (this.pageType.equals(IafBestiaryPages.SIREN)) {

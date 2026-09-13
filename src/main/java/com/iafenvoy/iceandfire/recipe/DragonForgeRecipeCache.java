@@ -2,20 +2,19 @@ package com.iafenvoy.iceandfire.recipe;
 
 import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.registry.IafRecipes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 
 import java.util.List;
 
 /**
- * Client copy of dragon-forge recipes delivered by
- * {@link net.neoforged.neoforge.event.OnDatapackSyncEvent#sendRecipes}.
+ * Client copy of dragon-forge recipes delivered by Fabric's recipe synchronization
+ * (see {@link DragonForgeRecipeSync}).
  */
-@EventBusSubscriber(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class DragonForgeRecipeCache {
     private static volatile List<DragonForgeRecipe> RECIPES = List.of();
 
@@ -26,14 +25,11 @@ public final class DragonForgeRecipeCache {
         return RECIPES;
     }
 
-    @SubscribeEvent
-    public static void onRecipesReceived(RecipesReceivedEvent event) {
-        RECIPES = event.getRecipeMap().byType(IafRecipes.DRAGON_FORGE_TYPE.get()).stream().map(RecipeHolder::value).toList();
-        IceAndFire.LOGGER.info("Received {} dragon forge recipes from NeoForge sync", RECIPES.size());
-    }
-
-    @SubscribeEvent
-    public static void onClientLogout(ClientPlayerNetworkEvent.LoggingOut event) {
-        RECIPES = List.of();
+    public static void init() {
+        ClientRecipeSynchronizedEvent.EVENT.register((minecraft, recipes) -> {
+            RECIPES = recipes.getAllOfType(IafRecipes.DRAGON_FORGE_TYPE.get()).stream().map(RecipeHolder::value).toList();
+            IceAndFire.LOGGER.info("Received {} dragon forge recipes from recipe sync", RECIPES.size());
+        });
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> RECIPES = List.of());
     }
 }

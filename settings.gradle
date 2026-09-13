@@ -1,9 +1,25 @@
 pluginManagement {
     repositories {
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        mavenCentral()
         gradlePluginPortal()
+        // MMCP convention plugin (com.mattmc.mcmod) from the sibling mcmodding workbench, published to mavenLocal
+        // by `gradlew build` in ../mcmodding/gradle-conventions. Scoped so nothing else resolves from mavenLocal.
+        mavenLocal {
+            content {
+                includeGroup 'com.mattmc.gradle'
+                includeGroup 'com.mattmc.mcmod'
+            }
+        }
     }
 }
 
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
+
+rootProject.name = 'iceandfire'
+include 'uranus'

@@ -32,6 +32,7 @@ public class LightningDragonChargeEntityRenderer extends EntityRenderer<Lightnin
     @Override
     public void extractRenderState(LightningDragonChargeEntity entity, LegacyEntityRenderState<LightningDragonChargeEntity> state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
+        state.partialTick = partialTicks;
         state.entity = entity;
     }
 

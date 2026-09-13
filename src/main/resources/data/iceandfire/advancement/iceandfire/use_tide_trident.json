@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:tide_trident"
+      "id": "iceandfire:tide_trident"
     },
     "title": {
       "translate": "advancements.iceandfire.tide_trident.title"
@@ -19,7 +19,7 @@
           "type": {
             "is_projectile": true,
             "direct_entity": {
-              "type": "iceandfire:tide_trident"
+              "minecraft:entity_type": "iceandfire:tide_trident"
             }
           }
         }

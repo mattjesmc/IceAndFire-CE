@@ -1,6 +1,5 @@
 package com.iafenvoy.iceandfire.entity;
 
-import com.iafenvoy.iceandfire.mixin.EntityIdAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
@@ -11,16 +10,16 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Shared collision-only implementation for the mod's multipart creatures.
@@ -49,9 +48,20 @@ public abstract class MultipartPartEntity<T extends LivingEntity> extends PartEn
     /**
      * Reserves a contiguous entity ID range for a multipart parent and all of its parts.
      */
-    public static int reserveParentId(int partCount) {
-        AtomicInteger counter = EntityIdAccessor.iceandfire$getEntityCounter();
-        return counter.getAndAdd(partCount + 1) + 1;
+    public static int reserveParentId(Level level, int partCount) {
+        // 26.2 allocates entity ids through the level (a monotonic counter that skips ids already in use), so draw
+        // ids until partCount + 1 consecutive ones come out and hand back the first for the parent.
+        int first = level.getNextEntityId();
+        int count = 1;
+        while (count < partCount + 1) {
+            int next = level.getNextEntityId();
+            if (next == first + count) count++;
+            else {
+                first = next;
+                count = 1;
+            }
+        }
+        return first;
     }
 
     @Override

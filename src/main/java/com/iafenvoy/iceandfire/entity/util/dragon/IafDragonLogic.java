@@ -412,14 +412,14 @@ public class IafDragonLogic {
                 } else if (this.dragon.getAnimation() == DragonBaseEntity.ANIMATION_TAILWHACK) {
                     if (this.dragon.getAnimationTick() > 20 && this.dragon.getAnimationTick() < 30) {
                         this.attackTarget(target, ridingPlayer, (int) this.dragon.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
-                        target.knockback(this.dragon.getDragonStage() * 0.6F, Mth.sin(this.dragon.getYRot() * 0.017453292F), -Mth.cos(this.dragon.getYRot() * 0.017453292F));
+                        target.knockback(this.dragon.getDragonStage() * 0.6F, Mth.sin(this.dragon.getYRot() * 0.017453292F), -Mth.cos(this.dragon.getYRot() * 0.017453292F), null, 0.0F);
                         this.dragon.usingGroundAttack = this.dragon.getRandom().nextBoolean();
                         this.dragon.randomizeAttacks();
                     }
                 } else if (this.dragon.getAnimation() == DragonBaseEntity.ANIMATION_WINGBLAST)
                     if ((this.dragon.getAnimationTick() == 15 || this.dragon.getAnimationTick() == 25 || this.dragon.getAnimationTick() == 35)) {
                         this.attackTarget(target, ridingPlayer, (int) this.dragon.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
-                        target.knockback(this.dragon.getDragonStage() * 0.6F, Mth.sin(this.dragon.getYRot() * 0.017453292F), -Mth.cos(this.dragon.getYRot() * 0.017453292F));
+                        target.knockback(this.dragon.getDragonStage() * 0.6F, Mth.sin(this.dragon.getYRot() * 0.017453292F), -Mth.cos(this.dragon.getYRot() * 0.017453292F), null, 0.0F);
                         this.dragon.usingGroundAttack = this.dragon.getRandom().nextBoolean();
                         this.dragon.randomizeAttacks();
                     }

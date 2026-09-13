@@ -38,3 +38,10 @@ run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+# Fabric dev server working directory
+run-server/
+
+# MMCP toolkit runtime (extracted by toolkitInit) and run records
+/.mcptoolkit/mcp-server/
+/.mcptoolkit/runs/

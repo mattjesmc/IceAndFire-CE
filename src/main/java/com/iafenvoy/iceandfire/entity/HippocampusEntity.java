@@ -15,6 +15,7 @@ import com.iafenvoy.uranus.animation.Animation;
 import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import com.iafenvoy.uranus.object.RegistryHelper;
+import com.iafenvoy.iceandfire.fabric.menu.ExtendedBufMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -66,7 +67,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.EnumSet;
 import java.util.List;
 
-public class HippocampusEntity extends TamableAnimal implements MenuProvider, ISyncMount, IAnimatedEntity, ICustomMoveController {
+public class HippocampusEntity extends TamableAnimal implements ExtendedBufMenuProvider, ISyncMount, IAnimatedEntity, ICustomMoveController {
     public static final int INV_SLOT_SADDLE = 0;
     public static final int INV_SLOT_CHEST = 1;
     public static final int INV_SLOT_ARMOR = 2;

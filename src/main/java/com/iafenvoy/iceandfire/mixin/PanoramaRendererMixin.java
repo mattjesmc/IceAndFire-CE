@@ -16,7 +16,7 @@ public abstract class PanoramaRendererMixin {
     private int iceandfire$slowTick = 0;
 
     @Inject(method = "extractRenderState", at = @At(value = "HEAD"), cancellable = true)
-    private void onExtractRenderState(GuiGraphicsExtractor guiGraphics, int width, int height, boolean shouldSpin, CallbackInfo ci) {
+    private void onExtractRenderState(GuiGraphicsExtractor guiGraphics, int width, int height, CallbackInfo ci) {
         if (!IafClientConfig.INSTANCE.customMainMenu.getValue()) return;
         this.iceandfire$slowTick++;
         if (this.iceandfire$slowTick >= 3) {

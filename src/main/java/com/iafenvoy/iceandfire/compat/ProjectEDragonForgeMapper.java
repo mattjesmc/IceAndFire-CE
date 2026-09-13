@@ -1,5 +1,6 @@
 package com.iafenvoy.iceandfire.compat;
 
+import com.mojang.datafixers.util.Pair;
 import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.recipe.DragonForgeRecipe;
 import com.iafenvoy.iceandfire.registry.IafRecipes;
@@ -12,7 +13,6 @@ import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -52,7 +52,7 @@ public class ProjectEDragonForgeMapper implements IRecipeTypeMapper {
             ItemStack output = recipe.getResultItem();
             if (output == null || output.isEmpty()) return false;
             boolean successful = true;
-            List<Tuple<NormalizedSimpleStack, List<Object2IntMap<NormalizedSimpleStack>>>> fakeGroupMap = new ArrayList<>();
+            List<Pair<NormalizedSimpleStack, List<Object2IntMap<NormalizedSimpleStack>>>> fakeGroupMap = new ArrayList<>();
             Object2IntMap<NormalizedSimpleStack> ingredientMap = new Object2IntLinkedOpenHashMap<>();
             for (Ingredient ingredient : List.of(recipe.getInput(), recipe.getBlood()))
                 if (!convertIngredient(ingredient, ingredientMap, fakeGroupMap, inssFakeGroupManager, entry.id().toString())) {
@@ -60,15 +60,15 @@ public class ProjectEDragonForgeMapper implements IRecipeTypeMapper {
                     break;
                 }
             if (successful) collector.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
-            for (Tuple<NormalizedSimpleStack, List<Object2IntMap<NormalizedSimpleStack>>> dummyGroupInfo : fakeGroupMap)
-                for (Object2IntMap<NormalizedSimpleStack> groupObject2IntMap : dummyGroupInfo.getB())
-                    collector.addConversion(1, dummyGroupInfo.getA(), groupObject2IntMap);
+            for (Pair<NormalizedSimpleStack, List<Object2IntMap<NormalizedSimpleStack>>> dummyGroupInfo : fakeGroupMap)
+                for (Object2IntMap<NormalizedSimpleStack> groupObject2IntMap : dummyGroupInfo.getSecond())
+                    collector.addConversion(1, dummyGroupInfo.getFirst(), groupObject2IntMap);
             return true;
         }
         return false;
     }
 
-    public static boolean convertIngredient(Ingredient ingredient, Object2IntMap<NormalizedSimpleStack> ingredientMap, List<Tuple<NormalizedSimpleStack, List<Object2IntMap<NormalizedSimpleStack>>>> fakeGroupMap, INSSFakeGroupManager fakeGroupManager, String recipeID) {
+    public static boolean convertIngredient(Ingredient ingredient, Object2IntMap<NormalizedSimpleStack> ingredientMap, List<Pair<NormalizedSimpleStack, List<Object2IntMap<NormalizedSimpleStack>>>> fakeGroupMap, INSSFakeGroupManager fakeGroupManager, String recipeID) {
         ItemStack[] matches = ingredient.getItems();
         if (matches.length == 1) return !addIngredient(ingredientMap, matches[0].copy());
         else if (matches.length > 0) {
@@ -96,7 +96,7 @@ public class ProjectEDragonForgeMapper implements IRecipeTypeMapper {
                         if (addIngredient(groupIngredientMap, stack.copy())) return false;
                         groupIngredientMaps.add(groupIngredientMap);
                     }
-                    fakeGroupMap.add(new Tuple<>(dummy, groupIngredientMaps));
+                    fakeGroupMap.add(Pair.of(dummy, groupIngredientMaps));
                 }
             }
         }

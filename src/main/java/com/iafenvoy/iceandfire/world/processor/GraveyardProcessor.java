@@ -1,6 +1,5 @@
 package com.iafenvoy.iceandfire.world.processor;
 
-import com.iafenvoy.iceandfire.registry.IafProcessors;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -9,11 +8,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.NotNull;
 
-public class GraveyardProcessor extends StructureProcessor {
+public class GraveyardProcessor implements StructureProcessor {
     public static final GraveyardProcessor INSTANCE = new GraveyardProcessor();
     public static final MapCodec<GraveyardProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -32,7 +30,7 @@ public class GraveyardProcessor extends StructureProcessor {
     }
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos pivot, StructureTemplate.@NotNull StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo currentBlockInfo, StructurePlaceSettings data) {
+    public StructureTemplate.StructureBlockInfo processBlock(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos pivot, @NotNull BlockPos templateRelativePos, StructureTemplate.StructureBlockInfo currentBlockInfo, StructurePlaceSettings data) {
         RandomSource random = data.getRandom(currentBlockInfo.pos());
         if (currentBlockInfo.state().getBlock() == Blocks.STONE_BRICKS) {
             BlockState state = getRandomCrackedBlock(random);
@@ -46,7 +44,7 @@ public class GraveyardProcessor extends StructureProcessor {
     }
 
     @Override
-    protected @NotNull StructureProcessorType<?> getType() {
-        return IafProcessors.GRAVEYARD_PROCESSOR.get();
+    public @NotNull MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 }

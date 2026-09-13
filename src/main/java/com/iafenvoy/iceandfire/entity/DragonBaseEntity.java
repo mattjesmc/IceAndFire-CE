@@ -15,7 +15,7 @@ import com.iafenvoy.iceandfire.item.SummoningCrystalItem;
 import com.iafenvoy.iceandfire.item.block.entity.DragonForgeInputBlockEntity;
 import com.iafenvoy.iceandfire.item.block.util.DragonProof;
 import com.iafenvoy.iceandfire.item.component.DragonSkullComponent;
-import com.iafenvoy.iceandfire.mixin.ServerLevelMultipartAccessor;
+import com.iafenvoy.iceandfire.fabric.entity.MultipartLevelAccess;
 import com.iafenvoy.iceandfire.network.payload.DragonSetBurnBlockS2CPayload;
 import com.iafenvoy.iceandfire.network.payload.StartRidingMobPayload;
 import com.iafenvoy.iceandfire.registry.*;
@@ -37,6 +37,7 @@ import com.iafenvoy.uranus.object.item.FoodUtils;
 import com.iafenvoy.uranus.util.RandomHelper;
 import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import com.iafenvoy.iceandfire.fabric.menu.ExtendedBufMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -99,10 +100,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.iafenvoy.iceandfire.fabric.network.ClientPacketDistributor;
+import com.iafenvoy.iceandfire.fabric.event.IafEventBus;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -110,7 +111,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.List;
 import java.util.Random;
 
-public abstract class DragonBaseEntity extends TamableAnimal implements MenuProvider, IPassabilityNavigator, ISyncMount, IFlyingMount, IMultipartEntity, IAnimatedEntity, IDragonFlute, IDeadMob, IVillagerFear, IAnimalFear, IHasCustomizableAttributes, ICustomSizeNavigator, ICustomMoveController {
+public abstract class DragonBaseEntity extends TamableAnimal implements ExtendedBufMenuProvider, IPassabilityNavigator, ISyncMount, IFlyingMount, IMultipartEntity, IAnimatedEntity, IDragonFlute, IDeadMob, IVillagerFear, IAnimalFear, IHasCustomizableAttributes, ICustomSizeNavigator, ICustomMoveController {
     public static final int FLIGHT_CHANCE_PER_TICK = 1500;
     private static final Identifier ARMOR_MODIFIER = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "armor_modifier");
     private static final EntityDataAccessor<Integer> HUNGER = SynchedEntityData.defineId(DragonBaseEntity.class, EntityDataSerializers.INT);
@@ -266,7 +267,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
         this.randomizeAttacks();
         this.lastScale = 0;//Ensure scale will be updated so that multipart can generate correctly
         this.updateScale(this.getRenderSize() / 3);
-        this.setId(MultipartPartEntity.reserveParentId(this.getParts().length));
+        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -461,16 +462,16 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
      * Keeps server-side ray tracing and interaction packets aware of all dragon parts.
      */
     private void registerParts() {
-        if (!(this.level() instanceof ServerLevel serverLevel)) return;
-        Int2ObjectMap<PartEntity<?>> parts = ((ServerLevelMultipartAccessor) serverLevel).iceandfire$getDragonParts();
+        if (!(this.level() instanceof MultipartLevelAccess access)) return;
+        Int2ObjectMap<PartEntity<?>> parts = access.iceandfire$getParts();
         for (PartEntity<?> part : this.getParts())
             if (part != null && !part.isRemoved())
                 parts.put(part.getId(), part);
     }
 
     private void unregisterParts() {
-        if (!(this.level() instanceof ServerLevel serverLevel)) return;
-        Int2ObjectMap<PartEntity<?>> parts = ((ServerLevelMultipartAccessor) serverLevel).iceandfire$getDragonParts();
+        if (!(this.level() instanceof MultipartLevelAccess access)) return;
+        Int2ObjectMap<PartEntity<?>> parts = access.iceandfire$getParts();
         for (PartEntity<?> part : this.getParts())
             if (part != null)
                 parts.remove(part.getId());
@@ -502,7 +503,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
     }
 
     public void updateBurnTarget() {
-        if (this.burningTarget != null && !this.isSleeping() && !this.isModelDead() && !this.isBaby()) {
+        if (this.burningTarget != null && !this.isSleeping() && !this.isModelDead() && !this.isBabyDragon()) {
             float maxDist = 115 * this.getDragonStage();
             if (this.level().getBlockEntity(this.burningTarget) instanceof DragonForgeInputBlockEntity forge && forge.isAssembled() && this.distanceToSqr(this.burningTarget.getX() + 0.5D, this.burningTarget.getY() + 0.5D, this.burningTarget.getZ() + 0.5D) < maxDist && this.canPositionBeSeen(this.burningTarget.getX() + 0.5D, this.burningTarget.getY() + 0.5D, this.burningTarget.getZ() + 0.5D)) {
                 this.getLookControl().setLookAt(this.burningTarget.getX() + 0.5D, this.burningTarget.getY() + 0.5D, this.burningTarget.getZ() + 0.5D, 180F, 180F);
@@ -796,7 +797,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
         output.putInt("BrushedTime", this.brushedTime);
         CompoundTag extensionData = new CompoundTag();
         this.addAdditionalSaveData(extensionData);
-        output.store(extensionData);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), extensionData);
     }
 
     @Override
@@ -1408,7 +1409,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
     }
 
     public void breakBlock(final BlockPos position) {
-        if (NeoForge.EVENT_BUS.post(new GriefBreakBlockEvent(this, position.getX(), position.getY(), position.getZ())).isCanceled())
+        if (IafEventBus.post(new GriefBreakBlockEvent(this, position.getX(), position.getY(), position.getZ())).isCanceled())
             return;
 
         final BlockState state = this.level().getBlockState(position);
@@ -1609,8 +1610,10 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
         return this.isMature();
     }
 
-    @Override
-    public boolean isBaby() {
+    /**
+     * Whether the dragon is in a baby stage. Vanilla's {@code isBaby()} is final and age-based in 26.2.
+     */
+    public boolean isBabyDragon() {
         return this.getDragonStage() < 2;
     }
 
@@ -2630,7 +2633,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
     }
 
     public final void breathAttack(double burnX, double burnY, double burnZ, boolean useCharge) {
-        if (NeoForge.EVENT_BUS.post(new DragonFireEvent(this, burnX, burnY, burnZ)).isCanceled()) return;
+        if (IafEventBus.post(new DragonFireEvent(this, burnX, burnY, burnZ)).isCanceled()) return;
         if (useCharge) this.performChargeAttack(burnX, burnY, burnZ);
         else this.performNormalBreathAttack(burnX, burnY, burnZ);
     }
@@ -2764,7 +2767,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements MenuProv
     }
 
     public boolean isAllowedToTriggerFlight() {
-        return (this.hasFlightClearance() && this.onGround() || this.isInWater()) && !this.isOrderedToSit() && this.getPassengers().isEmpty() && !this.isBaby() && !this.isSleeping() && this.canMove();
+        return (this.hasFlightClearance() && this.onGround() || this.isInWater()) && !this.isOrderedToSit() && this.getPassengers().isEmpty() && !this.isBabyDragon() && !this.isSleeping() && this.canMove();
     }
 
     public BlockPos getEscortPosition() {

@@ -33,6 +33,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -75,6 +76,7 @@ public class StoneStatueEntityRenderer extends EntityRenderer<StoneStatueEntity,
     @Override
     public void extractRenderState(StoneStatueEntity entity, LegacyEntityRenderState<StoneStatueEntity> state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
+        state.partialTick = partialTick;
         state.entity = entity;
     }
 
@@ -109,7 +111,7 @@ public class StoneStatueEntityRenderer extends EntityRenderer<StoneStatueEntity,
                 }
             }
         }
-        if (statue.getTrappedEntityType() == EntityType.PLAYER)
+        if (statue.getTrappedEntityType() == EntityTypes.PLAYER)
             model = new StonePlayerModel(this.context.bakeLayer(ModelLayers.PLAYER));
         this.modelMap.put(typeId, model);
         return model;

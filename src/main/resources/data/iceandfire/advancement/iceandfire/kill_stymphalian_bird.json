@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:stymphalian_bird_feather"
+      "id": "iceandfire:stymphalian_bird_feather"
     },
     "title": {
       "translate": "advancements.iceandfire.kill_stymphalian_bird.title"
@@ -16,7 +16,7 @@
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
         "entity": {
-          "type": "iceandfire:stymphalian_bird"
+          "minecraft:entity_type": "iceandfire:stymphalian_bird"
         }
       }
     }

@@ -62,11 +62,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.event.IafEventBus;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
 
 @SuppressWarnings("ALL")
-public class DeathWormEntity extends TamableAnimal implements ISyncMount, ICustomCollisions, BlacklistedFromStatues, IAnimatedEntity, IVillagerFear, IAnimalFear, IGroundMount, IHasCustomizableAttributes, ICustomMoveController {
+public class DeathWormEntity extends TamableAnimal implements IMultipartEntity, ISyncMount, ICustomCollisions, BlacklistedFromStatues, IAnimatedEntity, IVillagerFear, IAnimalFear, IGroundMount, IHasCustomizableAttributes, ICustomMoveController {
     public static final Identifier TAN_LOOT = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "entities/deathworm_tan");
     public static final Identifier WHITE_LOOT = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "entities/deathworm_white");
     public static final Identifier RED_LOOT = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "entities/deathworm_red");
@@ -105,7 +105,7 @@ public class DeathWormEntity extends TamableAnimal implements ISyncMount, ICusto
         }
         this.switchNavigator(false);
         this.onUpdateParts();
-        this.setId(MultipartPartEntity.reserveParentId(this.getParts().length));
+        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -253,7 +253,7 @@ public class DeathWormEntity extends TamableAnimal implements ISyncMount, ICusto
             this.playSound(this.getAgeScale() > 3 ? IafSounds.DEATHWORM_GIANT_ATTACK.get() : IafSounds.DEATHWORM_ATTACK.get(), 1, 1);
         }
         if (this.getRandom().nextInt(3) == 0 && this.getAgeScale() > 1 && level.getGameRules().get(GameRules.MOB_GRIEFING)) {
-            if (!NeoForge.EVENT_BUS.post(new GriefBreakBlockEvent(this, entityIn.getX(), entityIn.getY(), entityIn.getZ())).isCanceled()) {
+            if (!IafEventBus.post(new GriefBreakBlockEvent(this, entityIn.getX(), entityIn.getY(), entityIn.getZ())).isCanceled()) {
                 BlockLaunchExplosion.explode(this.level(), this, entityIn.getX(), entityIn.getY(), entityIn.getZ(), this.getAgeScale());
             }
         }
@@ -538,7 +538,7 @@ public class DeathWormEntity extends TamableAnimal implements ISyncMount, ICusto
             this.setTarget(null);
         if (this.willExplode) {
             if (this.ticksTillExplosion == 0) {
-                if (!NeoForge.EVENT_BUS.post(new GriefBreakBlockEvent(this, this.getX(), this.getY(), this.getZ())).isCanceled())
+                if (!IafEventBus.post(new GriefBreakBlockEvent(this, this.getX(), this.getY(), this.getZ())).isCanceled())
                     this.level().explode(this.thrower, this.getX(), this.getY(), this.getZ(), 2.5F * this.getAgeScale(), false, Level.ExplosionInteraction.MOB);
                 this.thrower = null;
             } else this.ticksTillExplosion--;

@@ -4,40 +4,49 @@ import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.data.component.ChainData;
 import com.iafenvoy.iceandfire.data.component.MiscData;
 import com.iafenvoy.iceandfire.util.attachment.IafEntityAttachment;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.function.Supplier;
-
-@EventBusSubscriber
+/**
+ * Entity data attachments (Fabric data attachment API). Ticked from {@code LivingEntityMixin}.
+ */
 public final class IafAttachments {
-    public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, IceAndFire.MOD_ID);
+    public static final AttachmentType<ChainData> CHAIN_DATA = AttachmentRegistry.<ChainData>builder()
+            .initializer(ChainData::new)
+            .persistent(ChainData.CODEC)
+            .syncWith(ChainData.PACKET_CODEC, AttachmentSyncPredicate.all())
+            .copyOnDeath()
+            .buildAndRegister(IceAndFire.id("chain_data"));
+    public static final AttachmentType<MiscData> MISC_DATA = AttachmentRegistry.<MiscData>builder()
+            .initializer(MiscData::new)
+            .persistent(MiscData.CODEC)
+            .syncWith(MiscData.PACKET_CODEC, AttachmentSyncPredicate.all())
+            .copyOnDeath()
+            .buildAndRegister(IceAndFire.id("misc_data"));
 
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ChainData>> CHAIN_DATA = register("chain_data", () -> AttachmentType.builder(ChainData::new).serialize(ChainData.CODEC.fieldOf("data")).sync(ChainData.PACKET_CODEC).copyOnDeath().build());
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MiscData>> MISC_DATA = register("misc_data", () -> AttachmentType.builder(MiscData::new).serialize(MiscData.CODEC.fieldOf("data")).sync(MiscData.PACKET_CODEC).copyOnDeath().build());
-
-    private static <T> DeferredHolder<AttachmentType<?>, AttachmentType<T>> register(String id, Supplier<AttachmentType<T>> type) {
-        return REGISTRY.register(id, type);
+    private IafAttachments() {
     }
 
-    @SubscribeEvent
-    public static void onLivingTick(EntityTickEvent.Post event) {
-        if (event.getEntity() instanceof LivingEntity living) {
-            tickAndSync(CHAIN_DATA, living);
-            tickAndSync(MISC_DATA, living);
-        }
+    /**
+     * Forces class initialization so the attachment types are registered early.
+     */
+    public static void init() {
     }
 
-    private static <T extends Entity, A extends IafEntityAttachment<T>> void tickAndSync(Supplier<AttachmentType<A>> type, T entity) {
-        A attachment = entity.getData(type);
+    /**
+     * Formerly {@code EntityTickEvent.Post}; invoked at the end of {@code LivingEntity#tick} on both sides.
+     */
+    public static void onLivingTick(LivingEntity living) {
+        tickAndSync(CHAIN_DATA, living);
+        tickAndSync(MISC_DATA, living);
+    }
+
+    private static <T extends Entity, A extends IafEntityAttachment<T>> void tickAndSync(AttachmentType<A> type, T entity) {
+        A attachment = entity.getAttachedOrCreate(type);
         attachment.tick(entity);
-        if (attachment.isDirty()) entity.syncData(type);
+        if (attachment.isDirty()) entity.setAttached(type, attachment);
     }
 }

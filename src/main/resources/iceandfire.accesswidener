@@ -1,0 +1,37 @@
+accessWidener v2 official
+# Converted from the upstream META-INF/accesstransformer.cfg (NeoForge) against Minecraft 26.2.
+# Entries whose target no longer exists in 26.2 were dropped: ParticleEngine#register and $SpriteParticleRegistration (use the
+# Fabric particle registry), ItemTransform(s)$Deserializer, RenderStateShard#setupState,
+# Blocks#leaves, GuiGraphics#innerBlit, GameRenderer#loadEffect.
+accessible method net/minecraft/world/damagesource/CombatTracker getMostSignificantFall ()Lnet/minecraft/world/damagesource/CombatEntry;
+accessible method net/minecraft/client/gui/screens/MenuScreens register (Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
+accessible class net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
+accessible method net/minecraft/client/Camera getMaxZoom (F)F
+accessible method net/minecraft/client/Camera move (FFF)V
+accessible field net/minecraft/client/multiplayer/ClientLevel entityStorage Lnet/minecraft/world/level/entity/TransientEntitySectionManager;
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool rawTemplates Ljava/util/List;
+mutable field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool rawTemplates Ljava/util/List;
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
+mutable field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
+accessible field net/minecraft/world/entity/projectile/arrow/AbstractArrow pickupItemStack Lnet/minecraft/world/item/ItemStack;
+accessible method net/minecraft/world/entity/projectile/arrow/AbstractArrow setPierceLevel (B)V
+accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
+accessible method net/minecraft/world/entity/LivingEntity getDimensions (Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;
+extendable method net/minecraft/world/entity/LivingEntity getDimensions (Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;
+accessible field net/minecraft/world/entity/ai/village/poi/PoiTypes TYPE_BY_STATE Ljava/util/Map;
+accessible method net/minecraft/core/particles/SimpleParticleType <init> (Z)V
+accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher renderers Ljava/util/Map;
+accessible field net/minecraft/world/level/Level damageSources Lnet/minecraft/world/damagesource/DamageSources;
+accessible field net/minecraft/world/level/pathfinder/NodeEvaluator mob Lnet/minecraft/world/entity/Mob;
+accessible field net/minecraft/world/level/pathfinder/NodeEvaluator entityHeight I
+accessible field net/minecraft/world/level/pathfinder/NodeEvaluator entityDepth I
+accessible field net/minecraft/world/level/pathfinder/NodeEvaluator entityWidth I
+accessible method net/minecraft/world/entity/SpawnPlacements register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
+accessible field net/minecraft/world/entity/projectile/arrow/ThrownTrident dealtDamage Z
+accessible field net/minecraft/world/entity/projectile/arrow/ThrownTrident ID_LOYALTY Lnet/minecraft/network/syncher/EntityDataAccessor;
+accessible field net/minecraft/world/entity/projectile/arrow/ThrownTrident ID_FOIL Lnet/minecraft/network/syncher/EntityDataAccessor;
+accessible field net/minecraft/world/entity/Mob targetSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;
+accessible field net/minecraft/world/entity/Mob goalSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;
+# Fabric-port additions
+accessible method net/minecraft/client/renderer/GameRenderer setPostEffect (Lnet/minecraft/resources/Identifier;)V
+accessible class net/minecraft/client/gui/Hud$HeartType

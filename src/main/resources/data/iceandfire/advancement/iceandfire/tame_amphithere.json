@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:amphithere_feather"
+      "id": "iceandfire:amphithere_feather"
     },
     "title": {
       "translate": "advancements.iceandfire.tame_amphithere.title"
@@ -16,7 +16,7 @@
       "trigger": "minecraft:tame_animal",
       "conditions": {
         "entity": {
-          "type": "iceandfire:amphithere"
+          "minecraft:entity_type": "iceandfire:amphithere"
         }
       }
     }

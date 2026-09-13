@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import com.iafenvoy.iceandfire.fabric.menu.ExtendedBufMenuProvider;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -39,11 +40,11 @@ public class BestiaryItem extends Item implements MenuProvider {
     @Override
     public @NotNull InteractionResult use(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
         if (playerIn instanceof ServerPlayer serverPlayer)
-            serverPlayer.openMenu(this, buf -> {
+            serverPlayer.openMenu(ExtendedBufMenuProvider.wrap(this, buf -> {
                 CompoundTag compound = new CompoundTag();
                 compound.put("data", ItemStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, playerIn.getItemInHand(handIn)).resultOrPartial(IceAndFire.LOGGER::error).orElse(new CompoundTag()));
                 buf.writeNbt(compound);
-            });
+            }));
         return InteractionResult.PASS;
     }
 

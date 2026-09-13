@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:ectoplasm"
+      "id": "iceandfire:ectoplasm"
     },
     "title": {
       "translate": "advancements.iceandfire.kill_ghost.title"
@@ -16,7 +16,7 @@
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
         "entity": {
-          "type": "iceandfire:ghost"
+          "minecraft:entity_type": "iceandfire:ghost"
         }
       }
     }

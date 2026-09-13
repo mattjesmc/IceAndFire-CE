@@ -88,7 +88,7 @@ public class DreadMobEntity extends Monster implements IDreadMob {
         EntityReference.store(this.entityData.get(COMMANDER_REFERENCE).orElse(null), output, "CommanderUUID");
         CompoundTag extensionData = new CompoundTag();
         this.addAdditionalSaveData(extensionData);
-        output.store(extensionData);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), extensionData);
     }
 
     @Override

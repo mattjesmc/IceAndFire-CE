@@ -28,11 +28,11 @@ import net.minecraft.world.level.block.SpreadingSnowyBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.NeoForge;
+import com.iafenvoy.iceandfire.fabric.event.IafEventBus;
 
 public class IafDragonDestructionManager {
     public static void destroyAreaBreath(final Level level, final BlockPos center, final DragonBaseEntity dragon) {
-        if (NeoForge.EVENT_BUS.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ())).isCanceled())
+        if (IafEventBus.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ())).isCanceled())
             return;
 
         int statusDuration;
@@ -105,7 +105,7 @@ public class IafDragonDestructionManager {
 
     public static void destroyAreaCharge(final Level level, final BlockPos center, final DragonBaseEntity dragon) {
         if (dragon == null) return;
-        if (NeoForge.EVENT_BUS.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ())).isCanceled())
+        if (IafEventBus.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ())).isCanceled())
             return;
 
         int x = 2;
@@ -237,7 +237,7 @@ public class IafDragonDestructionManager {
         else if (dragon.dragonType == IafDragonTypes.LIGHTNING) {
             double x = dragon.getX() - target.getX();
             double y = dragon.getZ() - target.getZ();
-            target.knockback((double) statusDuration / 10, x, y);
+            target.knockback((double) statusDuration / 10, x, y, null, 0.0F);
         }
     }
 

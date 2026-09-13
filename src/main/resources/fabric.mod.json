@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "iceandfire",
+  "version": "${version}",
+  "name": "Ice And Fire Community Edition",
+  "description": "An unofficial fork of Ice And Fire. Dragons and other mythological creatures in minecraft.",
+  "authors": [
+    "IAFEnvoy",
+    "xiaowu",
+    "uoay"
+  ],
+  "contributors": [
+    "Alexthe666"
+  ],
+  "contact": {
+    "sources": "https://github.com/IAFEnvoy/IceAndFire-CE",
+    "issues": "https://github.com/IAFEnvoy/IceAndFire-CE/issues"
+  },
+  "license": "LGPL-3.0",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.iafenvoy.iceandfire.fabric.IceAndFireFabric"
+    ],
+    "client": [
+      "com.iafenvoy.iceandfire.fabric.IceAndFireFabricClient"
+    ],
+    "modmenu": [
+      "com.iafenvoy.iceandfire.fabric.compat.ModMenuCompat"
+    ],
+    "jade": [
+      "com.iafenvoy.iceandfire.compat.jade.IceAndFireJadePlugin"
+    ],
+    "jei_mod_plugin": [
+      "com.iafenvoy.iceandfire.compat.jei.IceAndFireJeiPlugin"
+    ]
+  },
+  "accessWidener": "iceandfire.accesswidener",
+  "mixins": [
+    "iceandfire.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*",
+    "uranus": ">=3.0-alpha.1",
+    "jupiter": ">=2.4.3"
+  },
+  "suggests": {
+    "jei": "*",
+    "jade": "*",
+    "modmenu": "*"
+  }
+}

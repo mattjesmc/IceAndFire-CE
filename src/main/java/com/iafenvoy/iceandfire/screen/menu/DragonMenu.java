@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class DragonMenu extends AbstractContainerMenu {

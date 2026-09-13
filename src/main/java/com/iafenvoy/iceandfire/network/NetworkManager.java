@@ -1,25 +1,31 @@
 package com.iafenvoy.iceandfire.network;
 
+import com.iafenvoy.iceandfire.fabric.network.IPayloadContext;
 import com.iafenvoy.iceandfire.network.payload.*;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-@EventBusSubscriber
+/**
+ * Registers payload types (both directions) and the server-side receivers.
+ * Client receivers live in {@link com.iafenvoy.iceandfire.fabric.network.ClientReceivers}.
+ */
 public final class NetworkManager {
-    @SubscribeEvent
-    public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar("1");
+    private NetworkManager() {
+    }
 
-        registrar.playToClient(DragonSetBurnBlockS2CPayload.ID, DragonSetBurnBlockS2CPayload.CODEC, ClientNetworkHandlers::handleDragonSetBurnBlock);
-        registrar.playToClient(LightningBoltS2CPayload.ID, LightningBoltS2CPayload.CODEC, ClientNetworkHandlers::handleLightningBolt);
-        registrar.playToClient(UpdatePixieHouseS2CPayload.ID, UpdatePixieHouseS2CPayload.CODEC, ClientNetworkHandlers::handleUpdatePixieHouse);
-        registrar.playToClient(UpdatePixieJarS2CPayload.ID, UpdatePixieJarS2CPayload.CODEC, ClientNetworkHandlers::handleUpdatePixieJar);
-        registrar.playToClient(UpdatePodiumS2CPayload.ID, UpdatePodiumS2CPayload.CODEC, ClientNetworkHandlers::handleUpdatePodium);
+    public static void registerPayloads() {
+        PayloadTypeRegistry.clientboundPlay().register(DragonSetBurnBlockS2CPayload.ID, DragonSetBurnBlockS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(LightningBoltS2CPayload.ID, LightningBoltS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(UpdatePixieHouseS2CPayload.ID, UpdatePixieHouseS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(UpdatePixieJarS2CPayload.ID, UpdatePixieJarS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(UpdatePodiumS2CPayload.ID, UpdatePodiumS2CPayload.CODEC);
 
-        registrar.playToServer(DragonControlC2SPayload.ID, DragonControlC2SPayload.CODEC, ServerNetworkHandlers::handleDragonControl);
+        PayloadTypeRegistry.serverboundPlay().register(DragonControlC2SPayload.ID, DragonControlC2SPayload.CODEC);
 
-        registrar.playBidirectional(StartRidingMobPayload.ID, StartRidingMobPayload.CODEC, ServerNetworkHandlers::handleStartRidingMob, ClientNetworkHandlers::handleStartRidingMob);
+        PayloadTypeRegistry.clientboundPlay().register(StartRidingMobPayload.ID, StartRidingMobPayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(StartRidingMobPayload.ID, StartRidingMobPayload.CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(DragonControlC2SPayload.ID, (payload, context) -> ServerNetworkHandlers.handleDragonControl(payload, IPayloadContext.of(context.player())));
+        ServerPlayNetworking.registerGlobalReceiver(StartRidingMobPayload.ID, (payload, context) -> ServerNetworkHandlers.handleStartRidingMob(payload, IPayloadContext.of(context.player())));
     }
 }

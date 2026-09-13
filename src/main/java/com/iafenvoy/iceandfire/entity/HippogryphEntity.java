@@ -20,6 +20,7 @@ import com.iafenvoy.uranus.animation.Animation;
 import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import com.iafenvoy.uranus.object.entity.pathfinding.raycoms.AdvancedPathNavigate;
+import com.iafenvoy.iceandfire.fabric.menu.ExtendedBufMenuProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -54,6 +55,7 @@ import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -70,7 +72,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-public class HippogryphEntity extends TamableAnimal implements MenuProvider, ISyncMount, IAnimatedEntity, IDragonFlute, IVillagerFear, IAnimalFear, IFlyingMount, ICustomMoveController, IHasCustomizableAttributes {
+public class HippogryphEntity extends TamableAnimal implements ExtendedBufMenuProvider, ISyncMount, IAnimatedEntity, IDragonFlute, IVillagerFear, IAnimalFear, IFlyingMount, ICustomMoveController, IHasCustomizableAttributes {
     private static final int FLIGHT_CHANCE_PER_TICK = 1200;
     private static final EntityDataAccessor<String> VARIANT = SynchedEntityData.defineId(HippogryphEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Boolean> SADDLE = SynchedEntityData.defineId(HippogryphEntity.class, EntityDataSerializers.BOOLEAN);
@@ -241,7 +243,7 @@ public class HippogryphEntity extends TamableAnimal implements MenuProvider, ISy
         String s = ChatFormatting.stripFormatting(player.getName().getString());
         boolean isDev = s.equals("Alexthe666") || s.equals("Raptorfarian") || s.equals("tweakbsd");
         if (this.isTame() && this.isOwnedBy(player)) {
-            if (itemstack.getItem() == Items.RED_DYE && this.getEnumVariant() != IafHippogryphTypes.ALEX && isDev) {
+            if (itemstack.getItem() == Items.DYE.pick(DyeColor.RED) && this.getEnumVariant() != IafHippogryphTypes.ALEX && isDev) {
                 this.setVariant(IafHippogryphTypes.ALEX);
                 if (!player.isCreative())
                     itemstack.shrink(1);
@@ -250,7 +252,7 @@ public class HippogryphEntity extends TamableAnimal implements MenuProvider, ISy
                     this.level().addParticle(ParticleTypes.CLOUD, this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getY() + (double) (this.random.nextFloat() * this.getBbHeight()), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), 0, 0, 0);
                 return InteractionResult.SUCCESS;
             }
-            if (itemstack.getItem() == Items.LIGHT_GRAY_DYE && this.getEnumVariant() != IafHippogryphTypes.RAPTOR && isDev) {
+            if (itemstack.getItem() == Items.DYE.pick(DyeColor.LIGHT_GRAY) && this.getEnumVariant() != IafHippogryphTypes.RAPTOR && isDev) {
                 this.setVariant(IafHippogryphTypes.RAPTOR);
                 if (!player.isCreative())
                     itemstack.shrink(1);

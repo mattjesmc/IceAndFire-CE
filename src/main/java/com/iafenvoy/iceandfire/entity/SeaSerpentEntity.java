@@ -57,7 +57,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -101,7 +101,7 @@ public class SeaSerpentEntity extends Animal implements IAnimatedEntity, IMultip
         this.lastScale = 0;
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.updateScale(this.getSeaSerpentScale());
-        this.setId(MultipartPartEntity.reserveParentId(this.getParts().length));
+        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
     }
 
     public static boolean isWaterBlock(Level world, BlockPos pos) {

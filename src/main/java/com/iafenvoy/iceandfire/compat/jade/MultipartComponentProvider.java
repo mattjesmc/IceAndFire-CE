@@ -4,7 +4,7 @@ import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.entity.DragonBaseEntity;
 import com.iafenvoy.iceandfire.entity.MultipartPartEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
@@ -33,7 +33,7 @@ public enum MultipartComponentProvider implements IEntityComponentProvider {
             if (parent instanceof Mob mob) {
                 iTooltip.clear();
                 iTooltip.addAll(mob.getDisplayName().toFlatList(Style.EMPTY.withColor(ChatFormatting.WHITE)));
-                iTooltip.add(new HealthElement(Gui.HeartType.NORMAL, mob.getMaxHealth(), mob.getHealth(), 0.0F));
+                iTooltip.add(new HealthElement(Hud.HeartType.NORMAL, mob.getMaxHealth(), mob.getHealth(), 0.0F));
                 iTooltip.add(new ArmorElement(mob.getArmorValue()));
                 if (mob instanceof DragonBaseEntity dragon) {
                     iTooltip.add(Component.translatable("dragon.stage").withStyle(ChatFormatting.GRAY).append(Component.literal(" " + dragon.getDragonStage())));

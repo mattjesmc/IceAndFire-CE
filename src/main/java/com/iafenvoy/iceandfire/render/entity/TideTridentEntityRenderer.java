@@ -32,6 +32,7 @@ public class TideTridentEntityRenderer extends EntityRenderer<TideTridentEntity,
     @Override
     public void extractRenderState(TideTridentEntity entity, LegacyEntityRenderState<TideTridentEntity> state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
+        state.partialTick = partialTicks;
         state.entity = entity;
     }
 

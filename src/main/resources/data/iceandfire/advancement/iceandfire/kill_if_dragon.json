@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:dragonbone"
+      "id": "iceandfire:dragonbone"
     },
     "title": {
       "translate": "advancements.iceandfire.kill_a_dragon.title"
@@ -16,7 +16,7 @@
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
         "entity": {
-          "type": "iceandfire:fire_dragon"
+          "minecraft:entity_type": "iceandfire:fire_dragon"
         }
       }
     },
@@ -24,7 +24,7 @@
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
         "entity": {
-          "type": "iceandfire:ice_dragon"
+          "minecraft:entity_type": "iceandfire:ice_dragon"
         }
       }
     },
@@ -32,7 +32,7 @@
       "trigger": "minecraft:player_killed_entity",
       "conditions": {
         "entity": {
-          "type": "iceandfire:lightning_dragon"
+          "minecraft:entity_type": "iceandfire:lightning_dragon"
         }
       }
     }

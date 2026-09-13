@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -55,7 +56,7 @@ public class TideTridentEntity extends ThrownTrident {
             this.dealtDamage = true;
         SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
         if (entity.hurtOrSimulate(damagesource, f)) {
-            if (entity.getType() == EntityType.ENDERMAN) return;
+            if (entity.getType() == EntityTypes.ENDERMAN) return;
 
             if (entity instanceof LivingEntity livingentity1) {
                 if (entity1 instanceof LivingEntity && this.level() instanceof ServerLevel serverWorld)
@@ -68,7 +69,7 @@ public class TideTridentEntity extends ThrownTrident {
         if (this.level() instanceof ServerLevel level && level.isThundering() && EnchantmentHelper.getItemEnchantmentLevel(RegistryHelper.getEnchantment(level.registryAccess(), Enchantments.CHANNELING), this.getPickupItemStackOrigin()) > 0) {
             BlockPos blockpos = entity.blockPosition();
             if (this.level().canSeeSky(blockpos)) {
-                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
+                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
                 if (lightningboltentity == null) return;
                 lightningboltentity.snapTo(Vec3.atCenterOf(blockpos));
                 lightningboltentity.setCause(entity1 instanceof ServerPlayer ? (ServerPlayer) entity1 : null);

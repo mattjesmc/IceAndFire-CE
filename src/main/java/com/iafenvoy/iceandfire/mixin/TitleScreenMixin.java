@@ -37,7 +37,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/LogoRenderer;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IF)V"))
     private void renderModBrand(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, @Local(name = "widgetFade") float widgetFade) {
         if (!IafClientConfig.INSTANCE.customMainMenu.getValue()) return;
-        if (Minecraft.getInstance().screen instanceof TitleScreen)
+        if (Minecraft.getInstance().gui.screen() instanceof TitleScreen)
             TitleScreenRenderManager.drawModName(guiGraphics, this.width, this.height, ((int) (widgetFade * 255.0F) << 24) | 0xFFFFFF);
     }
 }

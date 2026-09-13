@@ -1,0 +1,5 @@
+
+[mcp_servers.mcptoolkit]
+command = "node"
+args = ["C:/Users/Matthijs/Icefirefabric/.mcptoolkit/mcp-server/index.mjs"]
+env = { MCPTK_URL = "http://127.0.0.1:25651" }

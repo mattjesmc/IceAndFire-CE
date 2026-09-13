@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.iafenvoy.iceandfire.fabric.network.IPayloadContext;
 
 public final class ClientNetworkHandlers {
     private static CameraType prev = CameraType.FIRST_PERSON;

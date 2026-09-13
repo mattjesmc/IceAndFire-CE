@@ -19,7 +19,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
+import com.iafenvoy.iceandfire.fabric.menu.ExtendedBufMenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public class DragonForgeBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer, MenuProvider {
+public class DragonForgeBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer, ExtendedBufMenuProvider {
     private static final int[] SLOTS_TOP = new int[]{0};
     private static final int[] SLOTS_SIDES = new int[]{1};
     private static final int[] SLOTS_BOTTOM = new int[]{2};
@@ -234,7 +234,7 @@ public class DragonForgeBlockEntity extends BaseContainerBlockEntity implements 
 
     public List<DragonForgeRecipe> getRecipes() {
         if (!(this.level instanceof ServerLevel serverLevel)) return DragonForgeRecipeCache.get();
-        return serverLevel.getServer().getRecipeManager().recipeMap().byType(IafRecipes.DRAGON_FORGE_TYPE.get()).stream().map(RecipeHolder::value).toList();
+        return serverLevel.getServer().getRecipeManager().getRecipes().stream().map(RecipeHolder::value).filter(DragonForgeRecipe.class::isInstance).map(DragonForgeRecipe.class::cast).toList();
     }
 
     public boolean canSmelt() {

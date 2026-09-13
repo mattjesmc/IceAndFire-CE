@@ -45,7 +45,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.iafenvoy.iceandfire.fabric.network.PacketDistributor;
 
 @SuppressWarnings("ALL")
 public class PixieEntity extends TamableAnimal {

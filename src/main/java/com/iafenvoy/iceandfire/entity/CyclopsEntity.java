@@ -7,6 +7,7 @@ import com.iafenvoy.iceandfire.entity.pathfinding.CyclopsNavigation;
 import com.iafenvoy.iceandfire.entity.util.BlacklistedFromStatues;
 import com.iafenvoy.iceandfire.entity.util.IHasCustomizableAttributes;
 import com.iafenvoy.iceandfire.entity.util.IHumanoid;
+import com.iafenvoy.iceandfire.entity.util.IMultipartEntity;
 import com.iafenvoy.iceandfire.entity.util.IVillagerFear;
 import com.iafenvoy.iceandfire.entity.util.dragon.DragonUtils;
 import com.iafenvoy.iceandfire.event.GriefBreakBlockEvent;
@@ -52,12 +53,12 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.event.IafEventBus;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
-public class CyclopsEntity extends Monster implements IAnimatedEntity, BlacklistedFromStatues, IVillagerFear, IHumanoid, IHasCustomizableAttributes {
+public class CyclopsEntity extends Monster implements IMultipartEntity, IAnimatedEntity, BlacklistedFromStatues, IVillagerFear, IHumanoid, IHasCustomizableAttributes {
     private static final EntityDataAccessor<Boolean> BLINDED = SynchedEntityData.defineId(CyclopsEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CyclopsEntity.class, EntityDataSerializers.INT);
     public static Animation ANIMATION_STOMP;
@@ -77,7 +78,7 @@ public class CyclopsEntity extends Monster implements IAnimatedEntity, Blacklist
         ANIMATION_KICK = Animation.create(20);
         ANIMATION_ROAR = Animation.create(30);
         this.eyeEntity = new CyclopsEyeEntity(this, 0.2F, 0, 7.4F, 1.2F, 0.6F, 1);
-        this.setId(MultipartPartEntity.reserveParentId(this.getParts().length));
+        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -274,7 +275,7 @@ public class CyclopsEntity extends Monster implements IAnimatedEntity, Blacklist
         if (this.getAnimation() == ANIMATION_KICK && this.getTarget() != null && this.distanceToSqr(this.getTarget()) < 14D && this.getAnimationTick() == 12) {
             this.getTarget().hurt(this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
             if (this.getTarget() != null)
-                this.getTarget().knockback(2, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
+                this.getTarget().knockback(2, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ(), null, 0.0F);
 
         }
         if (this.getAnimation() != ANIMATION_EATPLAYER && this.getTarget() != null && !this.getPassengers().isEmpty() && this.getPassengers().contains(this.getTarget())) {
@@ -352,7 +353,7 @@ public class CyclopsEntity extends Monster implements IAnimatedEntity, Blacklist
                         Block block = state.getBlock();
                         if (!state.isAir() && !state.getShape(this.level(), pos).isEmpty() && !(block instanceof BushBlock) && block != Blocks.BEDROCK && (state.getBlock() instanceof LeavesBlock || state.is(BlockTags.LOGS))) {
                             this.getDeltaMovement().scale(0.6D);
-                            if (NeoForge.EVENT_BUS.post(new GriefBreakBlockEvent(this, a, b, c)).isCanceled()) continue;
+                            if (IafEventBus.post(new GriefBreakBlockEvent(this, a, b, c)).isCanceled()) continue;
                             if (block != Blocks.AIR)
                                 if (!this.level().isClientSide())
                                     this.level().destroyBlock(pos, true);

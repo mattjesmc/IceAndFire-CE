@@ -33,7 +33,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -81,7 +81,7 @@ public class HydraEntity extends Monster implements IAnimatedEntity, IMultipartE
         this.multipartLoaded = false;
         this.headDamageThreshold = Math.max(5, IafCommonConfig.INSTANCE.hydra.maxHealth.getValue().floatValue() * 0.08F);
         this.resetParts();
-        this.setId(MultipartPartEntity.reserveParentId(this.getParts().length));
+        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -148,7 +148,7 @@ public class HydraEntity extends Monster implements IAnimatedEntity, IMultipartE
                 if (attackTarget != null && this.distanceTo(attackTarget) < 6) {
                     attackTarget.hurt(this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
                     attackTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 3, false, false));
-                    attackTarget.knockback(0.25F, this.getX() - attackTarget.getX(), this.getZ() - attackTarget.getZ());
+                    attackTarget.knockback(0.25F, this.getX() - attackTarget.getX(), this.getZ() - attackTarget.getZ(), null, 0.0F);
                 }
             }
             if (breathing) {

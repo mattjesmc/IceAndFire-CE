@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -33,7 +34,7 @@ public class WanderingCyclopsSpawnFeature extends Feature<NoneFeatureConfigurati
             cyclops.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.SPAWNER, null);
             world.addFreshEntity(cyclops);
             for (int i = 0; i < 3 + random.nextInt(3); i++) {
-                Sheep sheep = EntityType.SHEEP.create(world.getLevel(), EntitySpawnReason.CHUNK_GENERATION);
+                Sheep sheep = EntityTypes.SHEEP.create(world.getLevel(), EntitySpawnReason.CHUNK_GENERATION);
                 assert sheep != null;
                 sheep.setPos(pos.getX() + 0.5F, pos.getY() + 1, pos.getZ() + 0.5F);
                 sheep.setColor(Sheep.getRandomSheepColor(world, pos));

@@ -31,6 +31,7 @@ public class DreadLichSkullEntityRenderer extends EntityRenderer<DreadLichSkullE
     @Override
     public void extractRenderState(DreadLichSkullEntity entity, LegacyEntityRenderState<DreadLichSkullEntity> state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
+        state.partialTick = partialTicks;
         state.entity = entity;
     }
 

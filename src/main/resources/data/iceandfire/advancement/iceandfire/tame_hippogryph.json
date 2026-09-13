@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-    "id": "iceandfire:hippogryph_talon"
+      "id": "iceandfire:hippogryph_talon"
     },
     "title": {
       "translate": "advancements.iceandfire.tame_hippogryph.title"
@@ -16,7 +16,7 @@
       "trigger": "minecraft:tame_animal",
       "conditions": {
         "entity": {
-          "type": "iceandfire:hippogryph"
+          "minecraft:entity_type": "iceandfire:hippogryph"
         }
       }
     }

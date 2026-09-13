@@ -580,7 +580,7 @@ public class AmphithereEntity extends TamableAnimal implements ISyncMount, IAnim
         if (target != null && this.getAnimation() == ANIMATION_BITE && this.getAnimationTick() == 7) {
             double dist = this.distanceToSqr(target);
             if (dist < 10) {
-                target.knockback(0.6F, Mth.sin(this.getYRot() * 0.017453292F), -Mth.cos(this.getYRot() * 0.017453292F));
+                target.knockback(0.6F, Mth.sin(this.getYRot() * 0.017453292F), -Mth.cos(this.getYRot() * 0.017453292F), null, 0.0F);
                 target.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             }
         }

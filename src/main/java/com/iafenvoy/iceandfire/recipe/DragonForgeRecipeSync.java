@@ -1,21 +1,18 @@
 package com.iafenvoy.iceandfire.recipe;
 
-import com.iafenvoy.iceandfire.registry.IafRecipes;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import com.iafenvoy.iceandfire.registry.IafRecipeSerializers;
+import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 
 /**
- * Asks NeoForge to send {@code iceandfire:dragonforge} recipes to the client.
+ * Asks Fabric's recipe synchronization to send {@code iceandfire:dragonforge} recipes to the client.
  * The client stores them in {@link DragonForgeRecipeCache}.
  */
-@EventBusSubscriber
 public final class DragonForgeRecipeSync {
     private DragonForgeRecipeSync() {
     }
 
-    @SubscribeEvent
-    public static void onDatapackSync(OnDatapackSyncEvent event) {
-        event.sendRecipes(IafRecipes.DRAGON_FORGE_TYPE.get());
+    public static void init() {
+        for (var serializer : IafRecipeSerializers.REGISTRY.getEntries())
+            RecipeSynchronization.synchronizeRecipeSerializer(serializer.get());
     }
 }

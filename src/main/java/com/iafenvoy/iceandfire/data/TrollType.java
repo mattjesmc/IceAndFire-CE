@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import com.iafenvoy.iceandfire.fabric.registry.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;

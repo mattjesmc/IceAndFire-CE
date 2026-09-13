@@ -1,0 +1,64 @@
+// Fabric fork of https://github.com/IAFEnvoy/Uranus (3.0-alpha.1, NeoForge-only upstream).
+plugins {
+    id 'net.fabricmc.fabric-loom'
+    id 'maven-publish'
+}
+
+version = project.uranus_version
+group = 'com.iafenvoy.uranus'
+
+base {
+    archivesName = 'uranus'
+}
+
+loom {
+    accessWidenerPath = file('src/main/resources/uranus.accesswidener')
+
+    mods {
+        uranus {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 25
+}
+
+java {
+    withSourcesJar()
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+    from('LICENSE') {
+        rename { "${it}_uranus" }
+    }
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+// Uranus is a library; only the root project launches dev games.
+tasks.matching { it.name.startsWith('run') }.configureEach { enabled = false }

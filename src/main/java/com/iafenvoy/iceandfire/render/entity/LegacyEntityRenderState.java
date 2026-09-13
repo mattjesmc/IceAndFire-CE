@@ -8,4 +8,8 @@ import net.minecraft.world.entity.Entity;
  */
 public class LegacyEntityRenderState<T extends Entity> extends LivingEntityRenderState {
     public T entity;
+    /**
+     * Vanilla dropped {@code EntityRenderState#partialTick} in 26.2; renderers that still animate from the live entity need it.
+     */
+    public float partialTick;
 }

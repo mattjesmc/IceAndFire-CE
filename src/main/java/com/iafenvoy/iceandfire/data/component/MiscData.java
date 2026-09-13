@@ -105,6 +105,6 @@ public class MiscData extends NeedUpdateData<LivingEntity> {
     }
 
     public static MiscData get(LivingEntity living) {
-        return living.getData(IafAttachments.MISC_DATA);
+        return living.getAttachedOrCreate(IafAttachments.MISC_DATA);
     }
 }

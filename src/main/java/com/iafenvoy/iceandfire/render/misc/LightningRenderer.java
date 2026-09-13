@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.apache.commons.lang3.tuple.Pair;
@@ -31,29 +30,6 @@ public class LightningRenderer {
     private static ClientLevel clientLevel() {
         Minecraft minecraft = Minecraft.getInstance();
         return minecraft == null ? null : minecraft.level;
-    }
-
-    public void render(float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn) {
-        ClientLevel level = clientLevel();
-        if (level == null) return;
-        VertexConsumer buffer = bufferIn.getBuffer(RenderTypes.lightning());
-        Matrix4f matrix = matrixStackIn.last().pose();
-        Timestamp timestamp = new Timestamp(level.getGameTime(), partialTicks);
-        boolean refresh = timestamp.isPassed(this.refreshTimestamp, (1 / REFRESH_TIME));
-        if (refresh) this.refreshTimestamp = timestamp;
-        for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = this.boltOwners.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<Object, BoltOwnerData> entry = iter.next();
-            BoltOwnerData data = entry.getValue();
-            // tick our bolts based on the refresh rate, removing if they're now finished
-            if (refresh)
-                data.bolts.removeIf(bolt -> bolt.tick(timestamp));
-            if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive())
-                data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp);
-            data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp));
-
-            if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME))
-                iter.remove();
-        }
     }
 
     public void submit(float partialTicks, PoseStack matrixStackIn, SubmitNodeCollector collector, int light) {
