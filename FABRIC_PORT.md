@@ -62,5 +62,5 @@ in `IceAndFireClient.init()`; `IafRenderers` is annotated client-only.
 
 ## Live development
 
-The sibling MMCP workbench (`../mcmodding`) can attach to the dev client for hot-swapping and screenshots; apply its
+The sibling MMCP workbench (`mattjesmc/MMCP`) can attach to the dev client for hot-swapping and screenshots; apply its
 `com.mattmc.mcmod` convention plugin after Loom in `build.gradle` and set `mcmod.port` in `gradle.properties`.
