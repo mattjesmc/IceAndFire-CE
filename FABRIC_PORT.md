@@ -54,6 +54,8 @@ in `IceAndFireClient.init()`; `IafRenderers` is annotated client-only.
 - **Farmer's Delight recipes** use `fabric:load_conditions` instead of `neoforge:conditions`.
 - **Vanilla 26.2 data changes**: the dreadwood tree features gained the now-mandatory `below_trunk_provider`, and
   advancement entity predicates use the `minecraft:entity_type` sub-predicate instead of `type`.
+- **Dragon variant fallback**: a dragon loaded without a valid `Variant` (e.g. `/summon` with NBT, which skips
+  `finalizeSpawn`) falls back to the first colour of its type instead of crashing the client renderer.
 - **Multipart entity ids** are reserved through `Level#getNextEntityId()` (the static counter on `Entity` is gone).
 - **Entity data** is stored in the same flat layout as upstream (`ValueOutput#store(MapCodec, tag)`), so saves keep
   the same keys.
