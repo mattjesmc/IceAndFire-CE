@@ -87,6 +87,10 @@ public class StoneStatueEntityRenderer extends EntityRenderer<StoneStatueEntity,
         if (Minecraft.getInstance().level == null) return null;
         Entity entity = statue.getTrappedEntityType().create(Minecraft.getInstance().level, EntitySpawnReason.TRIGGERED);
         if (entity == null) return null;
+        // 26.2: Entity#getId throws while the id is still 0, and the client level never hands out ids, so a hollow
+        // entity that is never added to the level needs one of its own. Negative ids never collide with the level's
+        // entities; the range is spaced so a multipart statue's parts (parent id + i + 1) stay negative too.
+        entity.setId(-64 * (Math.floorMod(typeId.hashCode(), 1_000_000) + 1));
         try {
             EntityDataHelper.load(entity, statue.getTrappedTag());
         } catch (Exception exception) {

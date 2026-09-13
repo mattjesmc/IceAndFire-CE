@@ -43,6 +43,9 @@ public abstract class LegacyEntityModelRenderer<T extends Entity, M extends Adva
         T entity = state.entity;
         poseStack.pushPose();
         poseStack.scale(-1.0F, -1.0F, 1.0F);
+        // Same offset LivingEntityRenderer applies: legacy models put their feet at y=24 px, so without it the
+        // whole model draws 1.5 blocks below the entity, inside the ground.
+        poseStack.translate(0.0F, -1.501F, 0.0F);
         this.model.setupAnim(entity, 0.0F, 0.0F, state.ageInTicks, 0.0F, 0.0F);
         collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(this.getTextureLocation(entity)), (pose, buffer) -> {
             PoseStack modelStack = new PoseStack();

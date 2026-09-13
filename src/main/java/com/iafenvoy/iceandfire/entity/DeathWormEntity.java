@@ -105,7 +105,7 @@ public class DeathWormEntity extends TamableAnimal implements IMultipartEntity, 
         }
         this.switchNavigator(false);
         this.onUpdateParts();
-        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
+        MultipartPartEntity.assignParentId(this, this.getParts().length);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -203,6 +203,7 @@ public class DeathWormEntity extends TamableAnimal implements IMultipartEntity, 
     }
 
     private void updatePartIds() {
+        if (!MultipartPartEntity.hasId(this)) return;
         for (int i = 0; i < this.segments.length; i++)
             if (this.segments[i] != null)
                 this.segments[i].setId(this.getId() + i + 1);

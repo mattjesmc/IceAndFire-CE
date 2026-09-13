@@ -1,5 +1,6 @@
 package com.iafenvoy.iceandfire.fabric.entity;
 
+import com.iafenvoy.iceandfire.entity.MultipartPartEntity;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 /**
@@ -13,7 +14,7 @@ public interface MultipartLevelAccess {
             PartEntity<?>[] parts = multipart.getParts();
             if (parts == null) return;
             for (PartEntity<?> part : parts)
-                if (part != null) this.iceandfire$getParts().put(part.getId(), part);
+                if (part != null && MultipartPartEntity.hasId(part)) this.iceandfire$getParts().put(part.getId(), part);
         }
     }
 
@@ -22,7 +23,7 @@ public interface MultipartLevelAccess {
             PartEntity<?>[] parts = multipart.getParts();
             if (parts == null) return;
             for (PartEntity<?> part : parts)
-                if (part != null) this.iceandfire$getParts().remove(part.getId());
+                if (part != null && MultipartPartEntity.hasId(part)) this.iceandfire$getParts().remove(part.getId());
         }
     }
 }

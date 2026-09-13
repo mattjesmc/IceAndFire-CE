@@ -101,7 +101,7 @@ public class SeaSerpentEntity extends Animal implements IAnimatedEntity, IMultip
         this.lastScale = 0;
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.updateScale(this.getSeaSerpentScale());
-        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
+        MultipartPartEntity.assignParentId(this, this.getParts().length);
     }
 
     public static boolean isWaterBlock(Level world, BlockPos pos) {
@@ -228,6 +228,7 @@ public class SeaSerpentEntity extends Animal implements IAnimatedEntity, IMultip
     }
 
     private void updatePartIds() {
+        if (!MultipartPartEntity.hasId(this)) return;
         for (int i = 0; i < this.segments.length; i++)
             if (this.segments[i] != null)
                 this.segments[i].setId(this.getId() + i + 1);

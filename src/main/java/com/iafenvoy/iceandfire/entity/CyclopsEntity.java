@@ -78,7 +78,7 @@ public class CyclopsEntity extends Monster implements IMultipartEntity, IAnimate
         ANIMATION_KICK = Animation.create(20);
         ANIMATION_ROAR = Animation.create(30);
         this.eyeEntity = new CyclopsEyeEntity(this, 0.2F, 0, 7.4F, 1.2F, 0.6F, 1);
-        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
+        MultipartPartEntity.assignParentId(this, this.getParts().length);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -316,6 +316,7 @@ public class CyclopsEntity extends Monster implements IMultipartEntity, IAnimate
     }
 
     private void updatePartIds() {
+        if (!MultipartPartEntity.hasId(this)) return;
         if (this.eyeEntity != null)
             this.eyeEntity.setId(this.getId() + 1);
     }

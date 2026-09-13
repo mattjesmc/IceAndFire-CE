@@ -81,7 +81,7 @@ public class HydraEntity extends Monster implements IAnimatedEntity, IMultipartE
         this.multipartLoaded = false;
         this.headDamageThreshold = Math.max(5, IafCommonConfig.INSTANCE.hydra.maxHealth.getValue().floatValue() * 0.08F);
         this.resetParts();
-        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
+        MultipartPartEntity.assignParentId(this, this.getParts().length);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -272,6 +272,7 @@ public class HydraEntity extends Monster implements IAnimatedEntity, IMultipartE
     }
 
     private void updatePartIds() {
+        if (!MultipartPartEntity.hasId(this)) return;
         PartEntity<?>[] parts = this.getParts();
         for (int i = 0; i < parts.length; i++)
             parts[i].setId(this.getId() + i + 1);

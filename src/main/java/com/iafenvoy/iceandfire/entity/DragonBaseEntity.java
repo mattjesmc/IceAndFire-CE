@@ -267,7 +267,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements Extended
         this.randomizeAttacks();
         this.lastScale = 0;//Ensure scale will be updated so that multipart can generate correctly
         this.updateScale(this.getRenderSize() / 3);
-        this.setId(MultipartPartEntity.reserveParentId(this.level(), this.getParts().length));
+        MultipartPartEntity.assignParentId(this, this.getParts().length);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -453,6 +453,7 @@ public abstract class DragonBaseEntity extends TamableAnimal implements Extended
     }
 
     private void updatePartIds() {
+        if (!MultipartPartEntity.hasId(this)) return;
         PartEntity<?>[] parts = this.getParts();
         for (int i = 0; i < parts.length; i++)
             parts[i].setId(this.getId() + i + 1);

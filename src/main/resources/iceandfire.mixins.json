@@ -6,6 +6,7 @@
   "mixins": [
     "BlockPropertiesMixin",
     "ChickenMixin",
+    "EntityAccessor",
     "ItemPropertiesMixin",
     "LevelMixin",
     "LivingEntityAccessor",

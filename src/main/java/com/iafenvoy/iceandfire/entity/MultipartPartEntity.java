@@ -16,6 +16,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import com.iafenvoy.iceandfire.fabric.entity.PartEntity;
+import com.iafenvoy.iceandfire.mixin.EntityAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,9 +47,24 @@ public abstract class MultipartPartEntity<T extends LivingEntity> extends PartEn
     }
 
     /**
-     * Reserves a contiguous entity ID range for a multipart parent and all of its parts.
+     * Whether {@code entity} has been given its network id yet. On the server the {@link Entity} constructor assigns one;
+     * on the client it stays 0 until the spawn packet arrives, and {@link Entity#getId()} throws until then.
      */
-    public static int reserveParentId(Level level, int partCount) {
+    public static boolean hasId(Entity entity) {
+        return ((EntityAccessor) entity).iceandfire$getRawId() != 0;
+    }
+
+    /**
+     * Gives a multipart parent the first id of a contiguous range wide enough for it and all of its parts, so the
+     * parts can use {@code parentId + i + 1} on both sides. Server only: the client level never hands out ids (it
+     * always answers 0), and the spawn packet's {@link Entity#setId} is what numbers the parent and its parts there.
+     */
+    public static void assignParentId(Entity parent, int partCount) {
+        if (parent.level().isClientSide()) return;
+        parent.setId(reserveParentId(parent.level(), partCount));
+    }
+
+    private static int reserveParentId(Level level, int partCount) {
         // 26.2 allocates entity ids through the level (a monotonic counter that skips ids already in use), so draw
         // ids until partCount + 1 consecutive ones come out and hand back the first for the parent.
         int first = level.getNextEntityId();
