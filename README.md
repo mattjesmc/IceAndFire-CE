@@ -13,7 +13,7 @@ Related Links:
 
 **Please DO NOT report any issue to the original mod!**
 
-Join our [Discord](https://discord.gg/NDzz2upqAk) and check
+check
 [the wiki](https://docs.iafenvoy.com/docs/mod/ice-and-fire-ce/) if you have any questions.
 
 ## What have we have added
