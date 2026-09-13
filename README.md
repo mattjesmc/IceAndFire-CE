@@ -1,5 +1,20 @@
 > **Fabric 26.2 fork.** This branch is a personal port of Ice And Fire: Community Edition to Fabric on Minecraft 26.2.
 > Upstream is NeoForge-only; see [FABRIC_PORT.md](FABRIC_PORT.md) for how the port is put together and what differs.
+>
+> **Installing the Fabric build.** Download the jar from the
+> [releases page](https://github.com/mattjesmc/IceAndFire-CE/releases) and drop it in your `mods` folder together with
+> [Fabric API](https://modrinth.com/mod/fabric-api). Uranus and Jupiter are bundled inside the jar. Requirements:
+>
+> | Requirement | Version |
+> |---|---|
+> | Minecraft | 26.2 |
+> | Fabric Loader | 0.19.5 or newer |
+> | Fabric API | any 26.2 build |
+> | Java | 25 or newer |
+>
+> JEI, Jade and Mod Menu are optional. Curios/Trinkets integration is not available on this loader. This is an alpha:
+> report issues on this fork's issue tracker, not upstream's. Do not put this jar into a world that was played with the
+> NeoForge version or vice versa without a backup.
 
 # Ice And Fire Community Edition
 
