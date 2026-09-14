@@ -4,23 +4,17 @@ import com.iafenvoy.iceandfire.IceAndFire;
 import com.iafenvoy.iceandfire.entity.CockatriceEntity;
 import com.iafenvoy.iceandfire.render.model.CockatriceChickModel;
 import com.iafenvoy.iceandfire.render.model.CockatriceModel;
-import com.iafenvoy.uranus.client.model.AdvancedEntityModel;
+import com.iafenvoy.iceandfire.render.model.DragonBaseModel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
-public class CockatriceEntityRenderer extends EntityRenderer<CockatriceEntity, LegacyEntityRenderState<CockatriceEntity>> {
+public class CockatriceEntityRenderer extends LegacyMobRenderer<CockatriceEntity, DragonBaseModel<CockatriceEntity>> {
     public static final Identifier TEXTURE_ROOSTER = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "textures/entity/cockatrice/cockatrice_0.png");
     public static final Identifier TEXTURE_HEN = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "textures/entity/cockatrice/cockatrice_1.png");
     public static final Identifier TEXTURE_ROOSTER_CHICK = Identifier.fromNamespaceAndPath(IceAndFire.MOD_ID, "textures/entity/cockatrice/cockatrice_0_chick.png");
@@ -29,8 +23,7 @@ public class CockatriceEntityRenderer extends EntityRenderer<CockatriceEntity, L
     public static final CockatriceChickModel BABY_MODEL = new CockatriceChickModel();
 
     public CockatriceEntityRenderer(EntityRendererProvider.Context context) {
-        super(context);
-        this.shadowRadius = 0.6F;
+        super(context, ADULT_MODEL, 0.6F);
     }
 
     private Vec3 getPosition(LivingEntity LivingEntityIn, double p_177110_2_) {
@@ -57,40 +50,19 @@ public class CockatriceEntityRenderer extends EntityRenderer<CockatriceEntity, L
         }
     }
 
-    protected void scale(CockatriceEntity entity, @NotNull PoseStack matrixStackIn) {
+    @Override
+    protected DragonBaseModel<CockatriceEntity> modelFor(CockatriceEntity entity) {
+        return entity.isBaby() ? BABY_MODEL : ADULT_MODEL;
+    }
+
+    @Override
+    protected void scale(CockatriceEntity entity, @NotNull PoseStack matrixStackIn, float partialTick) {
         if (entity.isBaby())
             matrixStackIn.scale(0.5F, 0.5F, 0.5F);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(CockatriceEntity cockatrice) {
         return cockatrice.isBaby() ? cockatrice.isHen() ? TEXTURE_HEN_CHICK : TEXTURE_ROOSTER_CHICK : cockatrice.isHen() ? TEXTURE_HEN : TEXTURE_ROOSTER;
-    }
-
-    @Override
-    public LegacyEntityRenderState<CockatriceEntity> createRenderState() {
-        return new LegacyEntityRenderState<>();
-    }
-
-    @Override
-    public void extractRenderState(CockatriceEntity entity, LegacyEntityRenderState<CockatriceEntity> state, float partialTicks) {
-        super.extractRenderState(entity, state, partialTicks);
-        state.entity = entity;
-    }
-
-    @Override
-    public void submit(LegacyEntityRenderState<CockatriceEntity> state, PoseStack poseStack, SubmitNodeCollector collector, @NonNull CameraRenderState camera) {
-        CockatriceEntity entity = state.entity;
-        AdvancedEntityModel<CockatriceEntity> model = entity.isBaby() ? BABY_MODEL : ADULT_MODEL;
-        poseStack.pushPose();
-        poseStack.scale(-1.0F, -1.0F, 1.0F);
-        this.scale(entity, poseStack);
-        model.setupAnim(entity, 0.0F, 0.0F, state.ageInTicks, 0.0F, 0.0F);
-        collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(this.getTextureLocation(entity)), (pose, buffer) -> {
-            PoseStack modelStack = new PoseStack();
-            modelStack.last().set(pose);
-            model.renderToBuffer(modelStack, buffer, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor == 0 ? -1 : state.outlineColor);
-        });
-        poseStack.popPose();
-        super.submit(state, poseStack, collector, camera);
     }
 }

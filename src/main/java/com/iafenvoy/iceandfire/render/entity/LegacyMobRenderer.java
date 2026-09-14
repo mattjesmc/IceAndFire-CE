@@ -65,6 +65,13 @@ public abstract class LegacyMobRenderer<T extends Mob, M extends AdvancedEntityM
         return this.model;
     }
 
+    /**
+     * The model to draw this entity with; renderers that switch models per entity (baby versus adult) override it.
+     */
+    protected M modelFor(T entity) {
+        return this.model;
+    }
+
     public final void addLayer(LegacyEntityFeature<T> feature) {
         this.legacyFeatures.add(feature);
     }
@@ -93,7 +100,8 @@ public abstract class LegacyMobRenderer<T extends Mob, M extends AdvancedEntityM
     public void submit(LegacyEntityRenderState<T> state, @NonNull PoseStack poseStack, @NonNull SubmitNodeCollector collector, @NonNull CameraRenderState camera) {
         T entity = state.entity;
         this.ensureModel();
-        if (this.model == null)
+        M model = this.modelFor(entity);
+        if (model == null)
             return;
         poseStack.pushPose();
         // Match LivingEntityRenderer's model origin before handing rendering to the legacy model.
@@ -102,13 +110,13 @@ public abstract class LegacyMobRenderer<T extends Mob, M extends AdvancedEntityM
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         this.scale(entity, poseStack, state.partialTick);
         poseStack.translate(0.0F, -1.501F, 0.0F);
-        this.model.setupAnim(entity, state.walkAnimationPos, state.walkAnimationSpeed, state.ageInTicks, 0.0F, 0.0F);
-        ModelPose modelPose = ModelPose.capture(this.model);
+        model.setupAnim(entity, state.walkAnimationPos, state.walkAnimationSpeed, state.ageInTicks, 0.0F, 0.0F);
+        ModelPose modelPose = ModelPose.capture(model);
         collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(this.getTextureLocation(entity), false), (pose, buffer) -> {
             modelPose.apply();
             PoseStack modelStack = new PoseStack();
             modelStack.last().set(pose);
-            this.model.renderToBuffer(modelStack, buffer, state.lightCoords, OverlayTexture.pack(OverlayTexture.u(0.0F), OverlayTexture.v(state.hasRedOverlay)), state.outlineColor == 0 ? -1 : state.outlineColor);
+            model.renderToBuffer(modelStack, buffer, state.lightCoords, OverlayTexture.pack(OverlayTexture.u(0.0F), OverlayTexture.v(state.hasRedOverlay)), state.outlineColor == 0 ? -1 : state.outlineColor);
         });
         for (LegacyEntityFeature<T> feature : this.legacyFeatures)
             feature.submit(entity, state.partialTick, poseStack, collector, camera, state.lightCoords, state.outlineColor);
